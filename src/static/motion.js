@@ -639,8 +639,8 @@
           else band.classList.add('is-open');
         }
         const img = band.querySelector('img'), title = band.querySelector('.svc-band-title');
-        // photo and its blurred surround drift together, by the same pixels
-        band.style.setProperty('--band-shift', motion ? ((through - .5) * -.08 * r.height).toFixed(1) + 'px' : '0px');
+        img?.style.setProperty('--band-shift', motion ? ((through - .5) * -14).toFixed(2) + '%' : '0px');
+        img?.style.setProperty('--band-zoom', motion ? (1.12 - e * .1).toFixed(4) : '1');
       });
     }
     const ask = () => { if (!queued) { queued = true; requestAnimationFrame(paint); } };
