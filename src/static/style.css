@@ -876,3 +876,8 @@ video:focus-visible{outline:3px solid var(--red-light);outline-offset:-3px}
 .sv-title{max-width:17ch}
 .sv-legal .article{max-width:var(--max)}.sv-legal .article>*{max-width:68ch}
 .sv-legal .article h2:first-child{margin-top:0}
+/* v45: uvítací hasič vykoukne zpoza červeného pásu – jen trup a hlava, zamává a zaleze */
+.ff-hello,.ff-hello.is-in,.ff-hello:not(.is-in){transform:none;transition:none;clip-path:inset(-80% -10% 0 -70%)}
+.ff-hello.is-in{pointer-events:auto;cursor:pointer}
+.ff-hello .ff-hello-body{transform:translate(38%,100%) scaleX(-1) rotate(-6deg);transform-origin:50% 100%;transition:transform .24s cubic-bezier(.5,0,.75,0)}
+.ff-hello.is-in .ff-hello-body{transform:translate(14%,36%) scaleX(-1) rotate(-12deg);transition:transform .36s cubic-bezier(.23,1,.32,1)}
