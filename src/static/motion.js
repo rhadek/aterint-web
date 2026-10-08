@@ -641,6 +641,51 @@
     ask();
   }
 
+  // Chapter choreography: title letters surface, a glint crosses the photo,
+  // the pointer acts as an inspector's torch, service columns assemble.
+  if (bands.length && typeof IntersectionObserver === 'function') {
+    const motionOn = () => !reduced.matches;
+    bands.forEach(band => {
+      const title = band.querySelector('.svc-band-title');
+      if (title && !title.dataset.split) {
+        title.dataset.split = '1';
+        title.setAttribute('aria-label', title.textContent);
+        let ci = 0;
+        const words = title.textContent.split(' ');
+        title.textContent = '';
+        words.forEach((w, wi) => {
+          const word = document.createElement('span'); word.className = 'fx-word'; word.setAttribute('aria-hidden', 'true');
+          for (const ch of w) { const c = document.createElement('span'); c.className = 'fx-char'; c.textContent = ch; c.style.setProperty('--ci', ci++); word.appendChild(c); }
+          title.appendChild(word);
+          if (wi < words.length - 1) title.appendChild(document.createTextNode(' '));
+        });
+      }
+      if (fine.matches) {
+        band.addEventListener('pointermove', ev => {
+          const r = band.getBoundingClientRect();
+          band.style.setProperty('--sx', (ev.clientX - r.left).toFixed(0) + 'px');
+          band.style.setProperty('--sy', (ev.clientY - r.top).toFixed(0) + 'px');
+          band.classList.add('is-torch');
+        }, { passive: true });
+        band.addEventListener('pointerleave', () => band.classList.remove('is-torch'));
+      }
+    });
+    root.classList.add('fx-chapters');
+    const lit = new IntersectionObserver(entries => entries.forEach(en => {
+      if (en.isIntersecting) { en.target.classList.add('is-lit'); lit.unobserve(en.target); }
+    }), { threshold: .45 });
+    bands.forEach(b => lit.observe(b));
+    document.querySelectorAll('.svc-item').forEach((item, i) => {
+      item.querySelectorAll('.svc-items li').forEach((li, j) => li.style.setProperty('--li', j));
+      item.style.setProperty('--col', i % 2);
+    });
+    const built = new IntersectionObserver(entries => entries.forEach(en => {
+      if (en.isIntersecting) { en.target.classList.add('is-in'); built.unobserve(en.target); }
+    }), { threshold: .2 });
+    document.querySelectorAll('.svc-item').forEach(i => built.observe(i));
+    if (!motionOn()) document.querySelectorAll('.svc-band,.svc-item').forEach(el => el.classList.add('is-lit', 'is-in'));
+  }
+
   // The film scene is a magnet: once part of it is on screen and scrolling
   // pauses, the page glides so the film fills the screen. A new gesture
   // always cancels the glide immediately.
