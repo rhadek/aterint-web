@@ -646,3 +646,17 @@ html.film-snap{scroll-snap-type:y proximity;scroll-padding-top:0}
 .home-page .service-directory-bottom>span{font:10px/1.6 monospace;letter-spacing:1px;color:#6e675d}
 .home-page .service-directory-bottom .quiet-link{color:#151817}
 .cinema-ai{display:inline-block;margin-left:10px;padding:3px 8px;border:1px solid #ffffff2e;border-radius:999px;color:#e8e2d8;letter-spacing:.6px}
+/* v21 – on wide screens the band keeps a calm height; the photo keeps its ratio in the centre
+   and dissolves into a blurred, darkened copy of itself at the sides */
+.svc-chapter:nth-child(1) .svc-band{--photo:url('/assets/media/office-v1.webp')}
+.svc-chapter:nth-child(2) .svc-band{--photo:url('/assets/media/inspection-v1.webp')}
+.svc-chapter:nth-child(3) .svc-band{--photo:url('/assets/media/construction-v1.webp')}
+@media(min-width:1180px){
+ .svc-band{--band-h:min(46vw,600px,78svh);--box-w:min(100vw,calc(var(--band-h) * 1.9));aspect-ratio:auto;height:var(--band-h);min-height:0;max-height:none;background:#1b1d1b}
+ .svc-band:before{content:'';position:absolute;inset:-60px;background:var(--photo) center/cover no-repeat;filter:blur(38px) saturate(.7) brightness(.55);transform:scale(1.08)}
+ .svc-band-media{left:50%;right:auto;width:var(--box-w);transform:translateX(-50%);-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 14%,#000 86%,transparent 100%)}
+ .svc-band:after{background:linear-gradient(180deg,#15181700 40%,#151817b3 100%),linear-gradient(90deg,#15181780,#15181700 30%,#15181700 70%,#15181780)}
+ .svc-band-caption{left:calc(50% - var(--box-w) / 2 + clamp(40px,4vw,72px));right:auto;max-width:calc(var(--box-w) - 80px)}
+ .ai-label{right:calc(50% - var(--box-w) / 2 + clamp(28px,3vw,52px))}
+ .svc-band-title{font-size:clamp(56px,5.4vw,104px)}
+}
