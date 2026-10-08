@@ -555,3 +555,51 @@ html.film-snap{scroll-snap-type:y proximity;scroll-padding-top:0}
  .fx-ready .ignite:before{display:none}
  ::view-transition-old(root),::view-transition-new(root){animation:none}
 }
+
+/* v14 – services as a dark "night shift" stage, titles heat up like metal, continuous into the film */
+.home-page{background:#141817}
+.home-page .service-directory{--night:#141817;--line-n:#ffffff14;--cold:#454d48;--ash:#8f9890;--hot:#ff6859;--whitehot:#f4efe6;position:relative;isolation:isolate;background:var(--night);color:var(--whitehot);padding-block:clamp(90px,13vh,170px) clamp(70px,10vh,130px);overflow:clip}
+.home-page .service-directory:before{content:'';position:absolute;inset:0;z-index:-2;background-image:linear-gradient(#b6c6b908 1px,transparent 1px),linear-gradient(90deg,#b6c6b908 1px,transparent 1px);background-size:88px 88px;mask-image:linear-gradient(180deg,transparent,#000 18%,#000 82%,transparent)}
+.home-page .service-directory:after{content:'';position:absolute;left:0;right:0;bottom:0;height:28vh;z-index:-1;background:linear-gradient(180deg,transparent,#181c1c);pointer-events:none}
+.home-page .service-directory .eyebrow{color:#ff8a72}
+.home-page .service-directory-heading h2{font-size:clamp(56px,9.4vw,168px);line-height:.92;font-weight:600;letter-spacing:-.055em;color:var(--whitehot)}
+.home-page .service-directory-heading .heading-dot{color:var(--hot)}
+.home-page .service-directory-note{color:var(--ash)}.home-page .service-directory-note>span{color:#b98c6c}
+/* Photo window: warm halo that breathes when the photo changes */
+.home-page .service-window{z-index:1}
+.home-page .service-window:before{content:'';position:absolute;inset:12% -6% -4%;z-index:-1;border-radius:50%;background:radial-gradient(closest-side,#d8322955,#d8322914 60%,transparent);filter:blur(30px);opacity:.85;transition:opacity .8s,transform 1.2s cubic-bezier(.16,1,.3,1);transform:translateY(var(--halo-y,0px)) scale(var(--halo-s,1))}
+.home-page .service-window-frame{border-radius:22px;background:#202523;box-shadow:0 40px 90px #0009,0 0 0 1px #ffffff12}
+.home-page .service-window-photo{filter:saturate(.62) contrast(1.06) brightness(.9)}
+.home-page .service-window figcaption{color:#6f7a72}
+/* Rows */
+.home-page .service-composition .service-fold{border-top:1px solid var(--line-n);background:transparent}
+.home-page .service-composition .service-fold:last-child{border-bottom:1px solid var(--line-n)}
+.home-page .service-composition .service-fold:before{background:var(--hot);box-shadow:0 0 14px var(--hot)}
+.home-page .service-composition .service-fold-number{color:#5f6a63;transition:color .5s}
+.home-page .service-composition .service-fold.is-reading .service-fold-number{color:var(--hot)}
+.home-page .service-composition .service-fold>summary h3{font-size:clamp(28px,3.1vw,56px);font-weight:600;letter-spacing:-.045em;line-height:1.02;color:var(--cold);transition:color .7s ease,text-shadow 1s ease}
+.home-page .service-composition .service-fold>summary:hover h3{color:#79827c}
+.home-page .service-composition .service-fold.is-reading>summary h3,.home-page .service-composition .service-fold[open]>summary h3{color:var(--whitehot);text-shadow:0 0 34px #ff685933}
+.fx-ready .home-page .service-composition .service-fold.is-reading>summary h3{background:linear-gradient(100deg,var(--whitehot) 0 38%,#ffd9b8 46%,var(--hot) 52%,#7a3a2a 58%,var(--cold) 66% 100%);background-size:300% 100%;background-position:0 0;-webkit-background-clip:text;background-clip:text;color:transparent;animation:heat-up 1.5s cubic-bezier(.3,.6,.2,1) both}
+@keyframes heat-up{from{background-position:100% 0}to{background-position:0 0}}
+.home-page .service-fold-preview{color:var(--ash);transition:opacity .6s,color .6s}
+.home-page .service-composition .service-fold:not(.is-reading):not([open]) .service-fold-preview{opacity:.45}
+.home-page .service-fold-action{color:#c08a6a}
+.home-page .service-composition .service-fold-toggle{border-color:#ffffff2a;color:#d9d4ca;background:transparent}
+.home-page .service-composition .service-fold.is-reading .service-fold-toggle{border-color:var(--hot);color:var(--hot)}
+.home-page .service-composition .service-fold[open]{background:#ffffff06;border-top-color:var(--line-n)}
+.home-page .service-composition .service-fold[open]>summary .service-fold-toggle{background:var(--hot);border-color:var(--hot);color:#141817}
+.home-page .service-fold-content ul{color:#c4c9c1}
+.home-page .service-fold-content li::marker{color:var(--hot)}
+.home-page .service-fold-link{color:var(--whitehot);border-bottom-color:#ff685966}
+.home-page .service-directory-bottom{border-top-color:var(--line-n);color:var(--ash)}
+.home-page .service-directory-bottom .quiet-link{color:var(--whitehot)}
+.home-page .service-directory .ember-field{z-index:-1}
+@media(max-width:899px){
+ .home-page .service-window{background:var(--night);box-shadow:0 10px 18px #141817e6}
+ .home-page .service-window:before{display:none}
+ .home-page .service-directory-heading h2{font-size:clamp(48px,14vw,76px)}
+ .home-page .service-composition .service-fold>summary h3{font-size:clamp(25px,6.4vw,34px)}
+}
+@media(prefers-reduced-motion:reduce){.fx-ready .home-page .service-composition .service-fold.is-reading>summary h3{animation:none;background:none;color:var(--whitehot)}}
+.fx-gliding{scroll-snap-type:none!important}

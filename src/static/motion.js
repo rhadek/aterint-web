@@ -480,8 +480,8 @@
   root.classList.add('fx-ready');
 
   // Embers rising from the hero: the one signature effect.
-  const hero = document.querySelector('.hero-home');
-  if (hero && document.createElement('canvas').getContext) {
+  function embers(hero, opt) {
+    if (!hero || !document.createElement('canvas').getContext) return;
     const canvas = document.createElement('canvas');
     canvas.className = 'ember-field'; canvas.setAttribute('aria-hidden', 'true');
     hero.insertBefore(canvas, hero.firstChild);
@@ -489,10 +489,10 @@
     let w = 0, h = 0, dpr = 1, visible = true, running = false, last = 0;
     let mx = -9999, my = -9999;
     const embers = [];
-    const count = () => Math.round(clamp(w / 18, 26, 90));
+    const count = () => Math.round(clamp(w / opt.density, 14, 90));
     function spawn(e, initial) {
       // Most embers rise around the extinguisher, a few drift over the copy.
-      const nearArt = Math.random() < (w < 680 ? .5 : .72);
+      const nearArt = opt.focus && Math.random() < (w < 680 ? .5 : .72);
       e.x = nearArt ? w * (w < 680 ? .5 : .74) + (Math.random() - .5) * w * (w < 680 ? .9 : .42) : Math.random() * w;
       e.y = initial ? Math.random() * h : h + 10 + Math.random() * 40;
       e.r = .8 + Math.random() * Math.random() * 2.8;
@@ -556,6 +556,8 @@
     hero.addEventListener('pointerleave', () => { mx = my = -9999; });
     update();
   }
+  embers(document.querySelector('.hero-home'), { density: 18, focus: true });
+  embers(document.querySelector('.service-directory'), { density: 46, focus: false });
 
   // Buttons: a hot glow is lit where the pointer enters and follows it.
   document.querySelectorAll('.button').forEach(el => {
@@ -610,4 +612,62 @@
   window.addEventListener('scroll', schedule, { passive: true });
   window.addEventListener('resize', schedule, { passive: true });
   schedule();
+
+  // Service photo halo shifts with the row being read.
+  const win = document.querySelector('.service-window');
+  const folds = [...document.querySelectorAll('.service-fold')];
+  if (win && folds.length && typeof MutationObserver === 'function') {
+    let last = -1;
+    new MutationObserver(() => {
+      const i = folds.findIndex(f => f.classList.contains('is-reading'));
+      if (i === last || i < 0) return; last = i;
+      win.style.setProperty('--halo-y', ((i / (folds.length - 1) - .5) * 80).toFixed(1) + 'px');
+      win.style.setProperty('--halo-s', '1.12');
+      setTimeout(() => win.style.setProperty('--halo-s', '1'), 420);
+    }).observe(folds[0].parentNode, { subtree: true, attributes: true, attributeFilter: ['class'] });
+  }
+
+  // The film scene is a magnet: once part of it is on screen and scrolling
+  // pauses, the page glides so the film fills the screen. A new gesture
+  // always cancels the glide immediately.
+  if (cinema) {
+    let idle, glide = 0, dir = 0, prevY = window.scrollY, gesture = false, quietUntil = 0;
+    const stop = () => { if (glide) { cancelAnimationFrame(glide); glide = 0; root.classList.remove('fx-gliding'); } };
+    const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    function glideTo(top) {
+      stop();
+      const from = window.scrollY, dist = top - from;
+      if (Math.abs(dist) < 2) return;
+      const dur = clamp(Math.abs(dist) / window.innerHeight, .35, 1) * 1000;
+      const t0 = performance.now();
+      root.classList.add('fx-gliding');
+      const step = now => {
+        const t = clamp((now - t0) / dur);
+        window.scrollTo({ top: from + dist * ease(t), behavior: 'instant' });
+        if (t < 1) glide = requestAnimationFrame(step); else { glide = 0; root.classList.remove('fx-gliding'); }
+      };
+      glide = requestAnimationFrame(step);
+    }
+    function settle() {
+      if (glide || gesture || reduced.matches || document.hidden || performance.now() < quietUntil) return;
+      const r = cinema.getBoundingClientRect(), vh = window.innerHeight;
+      if (r.height < vh * .8) return;
+      const top = window.scrollY + r.top;
+      const entering = dir >= 0 ? (r.top > 0 && r.top < vh * .8) : (r.top < 0 && r.top > -vh * .8);
+      const overshoot = Math.abs(r.top) < vh * .22;
+      if (entering || overshoot) glideTo(top);
+    }
+    window.addEventListener('scroll', () => {
+      const y = window.scrollY;
+      if (!glide) { if (Math.abs(y - prevY) > .5) dir = Math.sign(y - prevY); clearTimeout(idle); idle = setTimeout(settle, 140); }
+      prevY = y;
+    }, { passive: true });
+    const interrupt = () => { stop(); clearTimeout(idle); };
+    window.addEventListener('wheel', interrupt, { passive: true });
+    window.addEventListener('touchstart', () => { gesture = true; interrupt(); }, { passive: true });
+    window.addEventListener('touchend', () => { gesture = false; clearTimeout(idle); idle = setTimeout(settle, 140); }, { passive: true });
+    window.addEventListener('keydown', interrupt);
+    window.addEventListener('mousedown', interrupt);
+    document.addEventListener('click', e => { if (e.target.closest?.('a[href*="#"]')) { interrupt(); quietUntil = performance.now() + 1600; } });
+  }
 })();
