@@ -934,3 +934,5 @@ body{background:var(--paper)}
  .footer-return{min-height:44px}
 }
 .contact-index{display:none}
+/* elements revealed while scrolling back up appear in their final state at once */
+.fx-instant,.fx-instant *,.fx-instant *:before,.fx-instant *:after{transition:none!important;animation:none!important}

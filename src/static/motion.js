@@ -10,6 +10,8 @@
         if (!entry.isIntersecting) continue;
         revealObserver.unobserve(entry.target);
         if (typeof entry.target.animate !== 'function') continue;
+        // Arriving from below the element (scrolling up): show it as it is, no rise-up.
+        if (entry.boundingClientRect && entry.boundingClientRect.top < 0) { entry.target.style?.setProperty?.('--contact-line', '1'); continue; }
         if (entry.target.hasAttribute?.('data-contact-reveal')) {
           entry.target.style.setProperty('--contact-line', '1');
           entry.target.animate([{ transform: 'translateY(18px)' }, { transform: 'translateY(0)' }],
@@ -113,6 +115,7 @@
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
         textObserver.unobserve(entry.target);
+        if (entry.boundingClientRect && entry.boundingClientRect.top < 0) continue;
         entry.target.querySelectorAll('.text-word').forEach((word, index) => {
           word.animate([{ transform: 'translateY(108%) rotate(3deg)' }, { transform: 'translateY(0) rotate(0)' }],
             { duration: 850, delay: index * 55, fill: 'backwards', easing: 'cubic-bezier(.16,1,.3,1)' });
@@ -629,7 +632,10 @@
         const open = motion ? clamp((vh - r.top) / (vh * .75)) : 1;
         const e = 1 - Math.pow(1 - open, 3);
         const through = clamp((vh - r.top) / (vh + r.height));
-        if (e > .35) band.classList.add('is-open');
+        if (e > .35 && !band.classList.contains('is-open')) {
+          if (r.top < 0) { band.classList.add('fx-instant', 'is-open'); requestAnimationFrame(() => requestAnimationFrame(() => band.classList.remove('fx-instant'))); }
+          else band.classList.add('is-open');
+        }
         const img = band.querySelector('img'), title = band.querySelector('.svc-band-title');
         img?.style.setProperty('--band-shift', motion ? ((through - .5) * -14).toFixed(2) + '%' : '0px');
         img?.style.setProperty('--band-zoom', motion ? (1.12 - e * .1).toFixed(4) : '1');
@@ -672,8 +678,12 @@
       }
     });
     root.classList.add('fx-chapters');
+    // Coming back up from below: switch the element on instantly instead of replaying a downward entrance.
+    const showNow = (el, cls) => { el.classList.add('fx-instant', cls); requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove('fx-instant'))); };
     const lit = new IntersectionObserver(entries => entries.forEach(en => {
-      if (en.isIntersecting) { en.target.classList.add('is-lit'); lit.unobserve(en.target); }
+      if (!en.isIntersecting) return;
+      if (en.boundingClientRect.top < 0) { showNow(en.target, 'is-lit'); en.target.classList.add('is-open'); } else en.target.classList.add('is-lit');
+      lit.unobserve(en.target);
     }), { threshold: .45 });
     bands.forEach(b => lit.observe(b));
     document.querySelectorAll('.svc-item').forEach((item, i) => {
@@ -681,7 +691,9 @@
       item.style.setProperty('--col', i % 2);
     });
     const built = new IntersectionObserver(entries => entries.forEach(en => {
-      if (en.isIntersecting) { en.target.classList.add('is-in'); built.unobserve(en.target); }
+      if (!en.isIntersecting) return;
+      if (en.boundingClientRect.top < 0) showNow(en.target, 'is-in'); else en.target.classList.add('is-in');
+      built.unobserve(en.target);
     }), { threshold: .2 });
     document.querySelectorAll('.svc-item').forEach(i => built.observe(i));
     if (!motionOn()) document.querySelectorAll('.svc-band,.svc-item').forEach(el => el.classList.add('is-lit', 'is-in'));
