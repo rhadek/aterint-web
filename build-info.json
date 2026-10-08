@@ -13,7 +13,7 @@
     "/soukromi/"
   ],
   "assets": 22,
-  "workerBytes": 3050028,
+  "workerBytes": 3047728,
   "pageSecurity": {
     "/": "default-src 'none'; script-src 'self' 'sha256-D4+snG2W3zeVD8lx2cAm3EXPw3sKieYzIIGyEyz+p1s='; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests",
     "/sluzby/dokumentace-po-bozp-trebic/": "default-src 'none'; script-src 'self' 'sha256-Pvg+mcr0KYuuGFnouU4brU2YEdaIcsSdop+yBINgMMw='; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests",

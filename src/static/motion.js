@@ -557,54 +557,54 @@
     update();
   }
 
-  // Rolling labels on navigation links and buttons (fine pointers only).
-  if (fine.matches) {
-    document.querySelectorAll('.nav-links a, header .button, .hero-copy .button, .quiet-link').forEach(link => {
-      const node = [...link.childNodes].find(n => n.nodeType === 3 && n.textContent.trim());
-      if (!node) return;
-      const text = node.textContent.trim();
-      const roll = document.createElement('span'), inner = document.createElement('span');
-      roll.className = 'roll'; roll.dataset.t = text; inner.textContent = text; roll.appendChild(inner);
-      node.replaceWith(roll, document.createTextNode(node.textContent.endsWith(' ') ? ' ' : ''));
-    });
-  }
-
-  // Magnetic pull on primary buttons.
-  const magnets = [...document.querySelectorAll('.button, .band-toggle, .scene-arrows button, .footer-return > span')];
-  magnets.forEach(el => {
-    el.classList.add('magnet');
-    el.addEventListener('pointermove', ev => {
-      if (reduced.matches || !fine.matches) return;
+  // Buttons: a hot glow is lit where the pointer enters and follows it.
+  document.querySelectorAll('.button').forEach(el => {
+    el.classList.add('ignite');
+    const at = ev => {
       const r = el.getBoundingClientRect();
-      const x = (ev.clientX - r.left) / r.width - .5, y = (ev.clientY - r.top) / r.height - .5;
-      el.style.setProperty('--mx', (x * 14).toFixed(2) + 'px');
-      el.style.setProperty('--my', (y * 10).toFixed(2) + 'px');
-    });
-    el.addEventListener('pointerleave', () => { el.style.setProperty('--mx', '0px'); el.style.setProperty('--my', '0px'); });
+      el.style.setProperty('--gx', (ev.clientX - r.left).toFixed(1) + 'px');
+      el.style.setProperty('--gy', (ev.clientY - r.top).toFixed(1) + 'px');
+    };
+    el.addEventListener('pointerenter', at);
+    el.addEventListener('pointermove', at);
+    el.addEventListener('pointerleave', at);
   });
 
   // Scroll-linked: cinema zoom-in and the band reacting to scroll speed.
   const cinema = document.querySelector('.cinema-section');
   const cinemaBox = document.querySelector('.cinema-container');
   const track = document.querySelector('.activity-track');
-  let lastY = window.scrollY, speed = 0, ticking = false;
+  let lastY = window.scrollY, speed = 0, ticking = false, cine = 0;
+  function cineTarget() {
+    if (!cinema || reduced.matches) return 1;
+    const r = cinema.getBoundingClientRect(), vh = window.innerHeight;
+    // 0 while the section is outside, 1 while it fills the screen, back to 0 as it leaves.
+    const enter = clamp((vh - r.top) / (vh * .9));
+    const leave = clamp(r.bottom / (vh * .9));
+    return Math.min(enter, leave);
+  }
   function tick() {
     ticking = false;
     const y = window.scrollY, motion = !reduced.matches;
+    let again = false;
     if (cinema && cinemaBox) {
-      const r = cinema.getBoundingClientRect();
-      const p = motion ? clamp((window.innerHeight - r.top) / (window.innerHeight * .95)) : 1;
-      const e = 1 - Math.pow(1 - p, 3);
-      cinemaBox.style.setProperty('--cine-scale', (.82 + e * .18).toFixed(4));
-      cinemaBox.style.setProperty('--cine-y', ((1 - e) * 60).toFixed(2) + 'px');
+      const target = cineTarget();
+      cine += (target - cine) * (motion ? .12 : 1);
+      if (Math.abs(target - cine) > .0005) again = true; else cine = target;
+      const e = 1 - Math.pow(1 - cine, 3);
+      cinemaBox.style.setProperty('--cine-scale', (.74 + e * .26).toFixed(4));
+      cinemaBox.style.setProperty('--cine-y', ((1 - e) * 70 * (cinema.getBoundingClientRect().top < 0 ? -1 : 1)).toFixed(2) + 'px');
+      cinemaBox.style.setProperty('--cine-dim', (1 - e).toFixed(3));
+      cinemaBox.style.setProperty('--cine-radius', (18 + (1 - e) * 40).toFixed(1) + 'px');
     }
     if (track && motion) {
       speed += (Math.abs(y - lastY) - speed) * .2;
       const anim = track.getAnimations?.()[0];
       if (anim) anim.playbackRate = 1 + Math.min(speed, 120) / 12;
-      if (speed > .3) schedule();
+      if (speed > .3) again = true;
     }
     lastY = y;
+    if (again) schedule();
   }
   function schedule() { if (!ticking) { ticking = true; requestAnimationFrame(tick); } }
   window.addEventListener('scroll', schedule, { passive: true });

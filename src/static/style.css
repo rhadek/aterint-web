@@ -531,33 +531,16 @@ html.film-snap{scroll-snap-type:y proximity;scroll-padding-top:0}
 .motion-ready .title-period{display:inline-block;animation:ember-pulse 4.8s ease-in-out 2.2s infinite}
 @keyframes ember-pulse{0%,100%{text-shadow:0 0 0 #ff685900}45%{text-shadow:0 0 22px #ff6859aa,0 0 4px #ffb27a}60%{text-shadow:0 0 10px #ff685955}}
 
-/* Photo change as an upward wipe instead of a crossfade */
-.fx-ready .service-window .service-window-photo{opacity:1;z-index:1;clip-path:inset(100% 0 0 0);transform:scale(1.16) translateY(var(--service-drift,0px));transition:clip-path 0s linear 1.05s,transform 0s linear 1.05s}
-.fx-ready .service-window .service-window-photo.is-current{z-index:2;clip-path:inset(0 0 0 0);transform:scale(1.025) translateY(var(--service-drift,0px));transition:clip-path 1s cubic-bezier(.76,0,.24,1),transform 1.6s cubic-bezier(.16,1,.3,1)}
-.fx-ready .service-window-caption,.fx-ready .service-window-top{z-index:3}
-.fx-ready .service-window-name{display:inline-block;animation:caption-in .9s cubic-bezier(.16,1,.3,1)}
-@keyframes caption-in{from{opacity:0;transform:translateY(14px)}}
-
-/* Service rows: a red rule sweeps under the row being read or hovered */
-.fx-ready .service-fold summary{position:relative}
-.fx-ready .service-fold summary:after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--red);transform:scaleX(0);transform-origin:0 50%;transition:transform .9s cubic-bezier(.16,1,.3,1)}
-.fx-ready .service-fold.is-reading summary:after,.fx-ready .service-fold summary:hover:after{transform:scaleX(1)}
-.fx-ready .service-fold summary h3,.fx-ready .service-fold summary strong{transition:transform .5s cubic-bezier(.16,1,.3,1)}
-@media(hover:hover){.fx-ready .service-fold summary:hover h3,.fx-ready .service-fold summary:hover strong{transform:translateX(8px)}}
-
-/* Rolling link labels */
-.roll{position:relative;display:inline-block;overflow:hidden;vertical-align:bottom;line-height:1.25}
-.roll>span{display:inline-block;transition:transform .55s cubic-bezier(.76,0,.24,1)}
-.roll:after{content:attr(data-t);position:absolute;left:0;top:100%;white-space:nowrap;transition:transform .55s cubic-bezier(.76,0,.24,1)}
-a .roll,a .roll>span{color:inherit}
-.button:hover .roll{transform:none}
-a:hover .roll>span,a:hover .roll:after,a:focus-visible .roll>span,a:focus-visible .roll:after{transform:translateY(-100%)}
-
-/* Magnetic buttons (uses the translate property so existing hover transforms still apply) */
-.fx-ready .magnet{translate:var(--mx,0px) var(--my,0px);transition:background .3s,border-color .3s,color .3s,transform .4s,box-shadow .3s,translate .6s cubic-bezier(.2,1,.3,1)}
+/* Buttons: a hot glow lit from the pointer's entry point */
+.fx-ready .ignite{position:relative;isolation:isolate;overflow:hidden}
+.fx-ready .ignite:before{content:'';position:absolute;left:var(--gx,50%);top:var(--gy,50%);width:340px;height:340px;margin:-170px 0 0 -170px;border-radius:50%;z-index:-1;pointer-events:none;background:radial-gradient(circle,#ffb27a 0%,#ff6859 22%,#d83229 52%,#d8322900 72%);transform:scale(0);opacity:0;transition:transform .7s cubic-bezier(.16,1,.3,1),opacity .5s ease,left .12s linear,top .12s linear}
+.fx-ready .ignite:hover:before,.fx-ready .ignite:focus-visible:before{transform:scale(1);opacity:1}
+.fx-ready .ignite:hover{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 10px 34px #d8322940}
 
 /* Film frame grows into place as the section arrives */
-.fx-ready .cinema-container{transform:translateY(var(--cine-y,0px)) scale(var(--cine-scale,1));transform-origin:50% 60%;will-change:transform}
+.fx-ready .cinema-container{transform:translateY(var(--cine-y,0px)) scale(var(--cine-scale,1));transform-origin:50% 50%;will-change:transform}
+.fx-ready .cinema-frame,.fx-ready .cinema-frame video{border-radius:var(--cine-radius,18px)}
+.fx-ready .cinema-frame:after{content:'';position:absolute;inset:0;z-index:2;pointer-events:none;background:#151817;opacity:calc(var(--cine-dim,0) * .55)}
 
 /* Smooth cross-page transitions (supported browsers only) */
 @view-transition{navigation:auto}
@@ -568,10 +551,7 @@ a:hover .roll>span,a:hover .roll:after,a:focus-visible .roll>span,a:focus-visibl
 
 @media(prefers-reduced-motion:reduce){
  .ember-field{display:none}
- .fx-ready .service-window .service-window-photo{clip-path:none;opacity:0;transform:none;transition:none}
- .fx-ready .service-window .service-window-photo.is-current{opacity:1}
  .fx-ready .cinema-container{transform:none}
- .fx-ready .magnet{translate:none}
- .roll>span,.roll:after{transition:none}
+ .fx-ready .ignite:before{display:none}
  ::view-transition-old(root),::view-transition-new(root){animation:none}
 }
