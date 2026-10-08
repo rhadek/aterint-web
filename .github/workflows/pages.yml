@@ -1,11 +1,11 @@
 # Automatické sestavení a zveřejnění webu na GitHub Pages při každém pushi do main.
 #
 # Bez vlastní domény běží web na https://<uzivatel>.github.io/<repozitar>/
-# (pracovní verze, zakázaná indexace vyhledávači).
+# (produkční verze, indexovatelná vyhledávači).
 #
 # Pro vlastní doménu nastavte v repozitáři Settings → Secrets and variables
 # → Actions → Variables proměnnou CUSTOM_DOMAIN (např. aterint.com).
-# Web se pak sestaví jako produkční (indexovatelný) pro https://<doména>.
+# Web se pak sestaví pro https://<doména> a github.io adresa na ni přesměruje.
 name: Nasazení na GitHub Pages
 
 on:
@@ -46,7 +46,7 @@ jobs:
             python scripts/pages-prepare.py --base / --cname "$CUSTOM_DOMAIN" --out _site
           else
             owner_lc=$(echo "$OWNER" | tr '[:upper:]' '[:lower:]')
-            python scripts/generate.py --origin "https://$owner_lc.github.io/$REPO"
+            python scripts/generate.py --production --origin "https://$owner_lc.github.io/$REPO"
             python scripts/pages-prepare.py --base "/$REPO/" --out _site
           fi
 

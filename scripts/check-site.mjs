@@ -17,7 +17,7 @@ for(const path of info.pages){
  assert.equal((body.match(/<script/g)||[]).length,2);
  assert.match(body,/<script src="\/assets\/motion\.[a-f0-9]+\.js" defer><\/script>/);
  const data=body.match(/<script type="application\/ld\+json">([^]*?)<\/script>/)[1];
- const schema=JSON.parse(data);const firm=schema['@graph'].find(x=>x['@type']==='LocalBusiness');
+ const schema=JSON.parse(data);const firm=schema['@graph'].find(x=>['LocalBusiness','ProfessionalService'].includes(x['@type']));
  assert.equal(firm.address.streetAddress,'Na Kopcích 374');assert.equal(firm.telephone,'+420603702302');
  const hash=createHash('sha256').update(data).digest('base64');
  assert.ok(response.headers.get('Content-Security-Policy').includes("'sha256-"+hash+"'"));
@@ -70,7 +70,7 @@ assert.ok((await readFile(new URL('../src/static/style.css',import.meta.url),'ut
 const homepage=await (await req('/')).text();assert.ok(homepage.includes('Co zajišťujeme'));assert.ok(homepage.includes('Požární zasklení') || homepage.includes('požárního zasklení'));assert.ok(homepage.includes('Jakub Pažourek'));assert.ok(!homepage.includes('Doteď hlavně'));assert.ok(!homepage.includes('Co nám říct'));assert.ok(!homepage.includes('Začněme domluvou'));assert.ok(!homepage.includes('Na co se nás často ptáte'));
 assert.match(homepage,/<video controls muted loop playsinline preload="none" data-ambient-video/);assert.ok(!homepage.includes('film-copy'));assert.ok(!homepage.includes('service-observatory'));assert.equal((homepage.match(/class="svc-item"/g)||[]).length,6);assert.equal((homepage.match(/class="ai-label"/g)||[]).length,3);assert.ok(!homepage.includes('services-visual'));const serviceSection=homepage.split('id="sluzby"')[1].split('</section>')[0];assert.equal((serviceSection.match(/class="svc-band"/g)||[]).length,3);assert.equal((serviceSection.match(/class="svc-lead/g)||[]).length,6);assert.ok(!serviceSection.includes(' open>'));assert.ok(homepage.includes('class="guide-section') || homepage.includes('practical guide-section'));
 assert.ok((await req('/')).headers.get('Content-Security-Policy').includes("media-src 'self'"));
-const homeSchema=JSON.parse(homepage.match(/<script type="application\/ld\+json">([^]*?)<\/script>/)[1]);assert.ok(!homeSchema['@graph'].some(x=>x['@type']==='FAQPage'));
+const homeSchema=JSON.parse(homepage.match(/<script type="application\/ld\+json">([^]*?)<\/script>/)[1]);assert.ok(homeSchema['@graph'].some(x=>x['@type']==='FAQPage'));
 const motion=await readFile(new URL('../src/static/motion.js',import.meta.url),'utf8');let calls=0,observations=0;let callback,changed;const element={dataset:{sequence:'1'},animate(frames,options){calls++;assert.equal(frames.at(-1).opacity,1);assert.ok(options.duration<1000)}};
 function Observer(fn){callback=fn;this.observe=()=>{observations++};this.unobserve=()=>{};this.disconnect=()=>{}};
 runInNewContext(motion,{window:{matchMedia:()=>({matches:false,addEventListener:(name,fn)=>{changed=fn}}),IntersectionObserver:Observer},IntersectionObserver:Observer,document:{querySelectorAll:()=>[element],getAnimations:()=>[]}});
