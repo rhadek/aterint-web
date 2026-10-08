@@ -830,3 +830,30 @@ header .nav{position:relative}
 /* v28 – the film section's dark backdrop opens out of the page and closes again */
 .cinema-section{clip-path:inset(0 var(--cin-x,0px) round var(--cin-r,0px))}
 @media(prefers-reduced-motion:reduce){.cinema-section{clip-path:none}}
+/* v29 – performance: everything that moves in the film scene is a composited transform/opacity */
+.cinema-atmosphere{contain:strict}
+.cinema-aurora{filter:none;opacity:.8}
+.cinema-aurora i{mix-blend-mode:normal;will-change:transform;opacity:.22}
+.cinema-aurora i:nth-child(1){background:radial-gradient(circle,#ff7a4d 0%,#ff7a4d55 25%,transparent 62%)}
+.cinema-aurora i:nth-child(2){background:radial-gradient(circle,#2fb38c 0%,#2fb38c55 25%,transparent 62%)}
+.cinema-aurora i:nth-child(3){background:radial-gradient(circle,#f2c94c 0%,#f2c94c4d 25%,transparent 60%);opacity:.16}
+.cinema-aurora i:nth-child(4){background:radial-gradient(circle,#e8505b 0%,#e8505b4d 25%,transparent 62%);opacity:.18}
+.cinema-aurora i:nth-child(5){background:radial-gradient(circle,#5aa9e6 0%,#5aa9e64d 25%,transparent 62%);opacity:.13}
+.cinema-bokeh i{filter:none;box-shadow:none;background:radial-gradient(circle,var(--c,#ffd9a8) 0 35%,transparent 72%);width:calc(var(--s,10px) * 2.4);height:calc(var(--s,10px) * 2.4);will-change:transform,opacity}
+.cinema-section:not(.cinema-in-view) .cinema-aurora i,.cinema-section:not(.cinema-in-view) .cinema-bokeh i,.cinema-section:not(.cinema-in-view) .cinema-glow{animation-play-state:paused}
+/* opening panel without clip-path: two page-coloured curtains with rounded inner corners */
+.cinema-section{clip-path:none!important}
+.cin-curtain{position:absolute;top:0;bottom:0;width:120px;z-index:6;pointer-events:none;will-change:transform;background:var(--paper)}
+.cin-curtain-l{left:0;transform:translateX(calc(var(--cin-x,0px) - 120px))}
+.cin-curtain-r{right:0;transform:translateX(calc(120px - var(--cin-x,0px)))}
+.cin-curtain:before,.cin-curtain:after{content:'';position:absolute;width:44px;height:44px;transform:scale(var(--cin-k,0));will-change:transform}
+.cin-curtain-l:before{left:100%;top:0;transform-origin:0 0;background:radial-gradient(circle at 100% 100%,transparent 43px,var(--paper) 44px)}
+.cin-curtain-l:after{left:100%;bottom:0;transform-origin:0 100%;background:radial-gradient(circle at 100% 0,transparent 43px,var(--paper) 44px)}
+.cin-curtain-r:before{right:100%;top:0;transform-origin:100% 0;background:radial-gradient(circle at 0 100%,transparent 43px,var(--paper) 44px)}
+.cin-curtain-r:after{right:100%;bottom:0;transform-origin:100% 100%;background:radial-gradient(circle at 0 0,transparent 43px,var(--paper) 44px)}
+/* the frame keeps a fixed radius (no per-frame repaint of the video); the dim layer is composited */
+.fx-ready .cinema-frame,.fx-ready .cinema-frame video{border-radius:clamp(16px,1.8vw,26px)}
+.fx-ready .cinema-frame:after{will-change:opacity;opacity:var(--cine-dim-o,0)}
+.fx-ready .cinema-container{backface-visibility:hidden}
+.ff-stage .ff{will-change:transform}
+@media(prefers-reduced-motion:reduce){.cin-curtain{display:none}}

@@ -589,15 +589,15 @@
     ticking = false;
     const y = window.scrollY, motion = !reduced.matches;
     let again = false;
-    if (cinema && cinemaBox) {
+    const cr = cinema?.getBoundingClientRect();
+    if (cinema && cinemaBox && cr.bottom > -200 && cr.top < window.innerHeight + 200) {
       const target = cineTarget();
       cine += (target - cine) * (motion ? .12 : 1);
       if (Math.abs(target - cine) > .0005) again = true; else cine = target;
       const e = 1 - Math.pow(1 - cine, 3);
       cinemaBox.style.setProperty('--cine-scale', (.74 + e * .26).toFixed(4));
       cinemaBox.style.setProperty('--cine-y', ((1 - e) * 70 * (cinema.getBoundingClientRect().top < 0 ? -1 : 1)).toFixed(2) + 'px');
-      cinemaBox.style.setProperty('--cine-dim', (1 - e).toFixed(3));
-      cinemaBox.style.setProperty('--cine-radius', (18 + (1 - e) * 40).toFixed(1) + 'px');
+      cinemaBox.style.setProperty('--cine-dim-o', ((1 - e) * .55).toFixed(3));
     }
     if (track && motion) {
       speed += (Math.abs(y - lastY) - speed) * .2;
@@ -623,6 +623,7 @@
       const vh = window.innerHeight, vw = window.innerWidth, motion = !reduced.matches;
       bands.forEach(band => {
         const r = band.getBoundingClientRect();
+        if (r.bottom < -150 || r.top > vh + 150) return;   // off screen: nothing to update
         const open = motion ? clamp((vh - r.top) / (vh * .75)) : 1;
         const e = 1 - Math.pow(1 - open, 3);
         const through = clamp((vh - r.top) / (vh + r.height));
@@ -957,13 +958,15 @@
   // Film backdrop: the dark section opens out of the light page as it arrives
   // and folds back in as it leaves.
   if (cinema) {
-    let qc = false;
+    let qc = false, lastCx = '';
+    ['l', 'r'].forEach(side => { const c = document.createElement('div'); c.className = 'cin-curtain cin-curtain-' + side; c.setAttribute('aria-hidden', 'true'); cinema.appendChild(c); });
     const paintCine = () => {
       qc = false;
       const r = cinema.getBoundingClientRect(), vh = window.innerHeight, vw = window.innerWidth;
+      if (r.bottom < -100 || r.top > vh + 100) return;
       const e = reduced.matches ? 1 : 1 - Math.pow(1 - Math.min(clamp((vh - r.top) / (vh * .7)), clamp(r.bottom / (vh * .7))), 3);
-      cinema.style.setProperty('--cin-x', ((1 - e) * Math.min(vw * .06, 90)).toFixed(1) + 'px');
-      cinema.style.setProperty('--cin-r', ((1 - e) * 40).toFixed(1) + 'px');
+      const cx = ((1 - e) * Math.min(vw * .06, 90)).toFixed(1), ck = (1 - e).toFixed(3);
+      if (cx !== lastCx) { cinema.style.setProperty('--cin-x', cx + 'px'); cinema.style.setProperty('--cin-k', ck); lastCx = cx; }
     };
     const askCine = () => { if (!qc) { qc = true; requestAnimationFrame(paintCine); } };
     window.addEventListener('scroll', askCine, { passive: true }); window.addEventListener('resize', askCine, { passive: true }); askCine();
