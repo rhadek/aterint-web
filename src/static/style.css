@@ -666,7 +666,10 @@ html.film-snap{scroll-snap-type:y proximity;scroll-padding-top:0}
 .ff{position:absolute;left:0;bottom:-2px;height:var(--ff);width:calc(var(--ff) * .72);will-change:transform;pointer-events:auto;cursor:pointer}
 .ff-lift{position:absolute;inset:0;transform:translateY(105%);transition:transform .9s cubic-bezier(.34,1.4,.5,1)}
 .is-peeking .ff-lift{transform:translateY(46%)}
-.is-up .ff-lift{transform:translateY(0);transition:transform .6s cubic-bezier(.3,1.8,.5,1)}
+.is-up .ff-lift{transform:translateY(0);transition:transform .5s cubic-bezier(.3,1.8,.5,1)}
+
+.is-leaving .ff-lift{transition:transform .6s cubic-bezier(.5,-.5,.7,.4)}
+.ff-stage:not(.is-peeking):not(.is-up) .ff{pointer-events:none}
 .ff-face{position:absolute;inset:0;transform-origin:50% 50%}
 .ff svg{display:block;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 3px 4px #0007)}
 .ff-leg{transform-box:fill-box;transform-origin:50% 0}
@@ -701,5 +704,5 @@ html.film-snap{scroll-snap-type:y proximity;scroll-padding-top:0}
 .ff-flame.is-out .ff-smoke:nth-of-type(3){animation-delay:.3s;left:20%}
 @keyframes ff-smoke{0%{opacity:.7;transform:translateY(0) scale(.6)}100%{opacity:0;transform:translateY(-38px) scale(2.2)}}
 .ff-flame.is-out{transform:translateX(-50%) scale(1)}
-.ff-flame.is-out svg{transform:scale(0);transition:transform .7s ease-in}
+.ff-flame.is-out svg{animation:none;transform:scale(0);transition:transform .7s ease-in}
 @media(prefers-reduced-motion:reduce){.ff-stage{display:none}}

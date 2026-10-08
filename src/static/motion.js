@@ -772,31 +772,42 @@
     }
     async function lookAround() { for (let i = 0; i < 2; i++) { dir = -dir; place(); await sleep(450 + Math.random() * 400); } }
     ff.addEventListener('click', () => { ff.classList.remove('hop'); void ff.offsetWidth; ff.classList.add('hop'); });
+    const hide = () => stage.classList.remove('is-peeking', 'is-up');
     async function life() {
-      while (!visible) await sleep(300);
-      await sleep(1400);
-      x = W() * .78; dir = -1; place();
-      stage.classList.add('is-peeking');            // head appears above the edge
-      await sleep(1100); await lookAround();
-      stage.classList.add('is-up');                 // hop onto the frame
-      await sleep(700);
       let round = 0;
       while (alive) {
-        await sleep(round++ ? 3500 + Math.random() * 3500 : 1200);
-        if (round > 1 && Math.random() < .5) { await walkTo(clamp(W() * (.12 + Math.random() * .76), 0, W() - size()), .6); await sleep(900); await lookAround(); }
-        // a flame flares up somewhere along the edge, away from him
+        while (!visible) await sleep(300);
+        await sleep(round++ ? 5000 + Math.random() * 5000 : 1600);
         const w = W(), s = size();
-        let fx = x < w / 2 ? w * (.6 + Math.random() * .3) : w * (.08 + Math.random() * .3);
+        // 1. a flame flares up on the edge
+        const fx = w * (.1 + Math.random() * .8);
         flame.style.left = fx.toFixed(1) + 'px'; flame.className = 'ff-flame is-burning';
-        await sleep(600);
-        dir = fx > x ? 1 : -1; place(); ff.classList.add('alert'); await sleep(750); ff.classList.remove('alert');
-        await walkTo(fx > x ? fx - s * 1.55 : fx + s * .85, 1.7);
+        await sleep(900);
+        // 2. the firefighter surfaces from behind the frame, a fair way from the flame
+        const side = fx > w / 2 ? -1 : 1;
+        x = clamp(fx + side * w * (.22 + Math.random() * .18), s * .2, w - s);
+        dir = side; place();
+        stage.classList.add('is-peeking');
+        await sleep(950);
+        // 3. looks around, notices the flame
+        dir = -dir; place(); await sleep(500);
+        dir = fx > x ? 1 : -1; place(); await sleep(250);
+        ff.classList.add('alert'); await sleep(800); ff.classList.remove('alert');
+        // 4. jumps onto the edge and runs to it
+        stage.classList.add('is-up'); await sleep(550);
+        await walkTo(fx > x ? fx - s * 1.55 : fx + s * .85, 2.2);
         dir = fx > x ? 1 : -1; place();
+        // 5. puts it out
         ff.classList.add('spraying'); await sleep(900);
         flame.classList.add('is-out'); await sleep(900);
-        ff.classList.remove('spraying'); await sleep(500);
+        ff.classList.remove('spraying'); await sleep(350);
         flame.className = 'ff-flame';
         ff.classList.remove('hop'); void ff.offsetWidth; ff.classList.add('hop');
+        await sleep(900);
+        // 6. waves goodbye with a turn and drops back behind the frame
+        dir = -dir; place(); await sleep(400);
+        stage.classList.remove('is-up'); stage.classList.add('is-leaving');
+        await sleep(50); hide(); await sleep(900); stage.classList.remove('is-leaving');
       }
     }
     life();
