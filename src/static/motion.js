@@ -847,7 +847,7 @@
         const node = outline?.firstChild; if (!node || typeof document.createRange !== 'function') return;
         const r = document.createRange(); r.setStart(node, 0); r.setEnd(node, 1);
         const c = r.getBoundingClientRect(), b = sig.getBoundingClientRect(), base = probe.getBoundingClientRect().top;
-        spot.style.left = (c.left - b.left - spot.offsetWidth * .62 + c.width * .06).toFixed(1) + 'px';
+        spot.style.left = (c.left - b.left - spot.offsetWidth * .5 + c.width * .1).toFixed(1) + 'px';
         spot.style.top = (base - b.top - spot.offsetHeight).toFixed(1) + 'px';
       };
       align(); window.addEventListener('resize', align, { passive: true }); document.fonts?.ready.then(align);
@@ -907,6 +907,59 @@
       btn.addEventListener('pointerenter', up); btn.addEventListener('focus', up);
       btn.addEventListener('pointerleave', down); btn.addEventListener('blur', down);
     });
+  }
+
+  // Welcome: once per visit a larger firefighter slides in from the right,
+  // waves, says he will accompany the visitor, and slides away again.
+  const hello = document.querySelector('.ff-hello');
+  if (hello && !reduced.matches) {
+    let seen = false;
+    try { seen = sessionStorage.getItem('ff-hello') === '1'; sessionStorage.setItem('ff-hello', '1'); } catch (e) { /* storage blocked: just show it */ }
+    if (!seen) {
+      const pause = ms => new Promise(r => setTimeout(r, ms));
+      let gone = false;
+      const leave = async () => {
+        if (gone) return; gone = true;
+        hello.classList.remove('is-talking', 'is-waving'); await pause(250);
+        hello.classList.remove('is-in'); await pause(900); hello.hidden = true;
+      };
+      hello.addEventListener('click', leave);
+      window.addEventListener('scroll', () => { if (window.scrollY > window.innerHeight * .6) leave(); }, { passive: true });
+      (async () => {
+        await pause(document.querySelector('.intro-screen') ? 1900 : 700);
+        if (gone || window.scrollY > window.innerHeight * .5) return;
+        hello.hidden = false; void hello.offsetWidth;
+        hello.classList.add('is-in'); await pause(750);
+        hello.classList.add('is-waving'); await pause(500);
+        hello.classList.add('is-talking'); await pause(2600);
+        hello.classList.remove('is-waving'); await pause(2600);
+        hello.classList.add('is-waving'); await pause(1100);
+        leave();
+      })();
+    }
+  }
+
+  // Footer: a relaxed firefighter leaning against the "A" waves whenever the footer comes into view.
+  const leanGuy = document.querySelector('.ff-lean');
+  if (leanGuy) {
+    const sig = leanGuy.parentElement, outline = sig.querySelector('.signature-outline');
+    const probe = document.createElement('span'); probe.className = 'ff-baseline'; outline?.appendChild(probe);
+    const align = () => {
+      const node = outline?.firstChild; if (!node || typeof document.createRange !== 'function') return;
+      const r = document.createRange(); r.setStart(node, 0); r.setEnd(node, 1);
+      const c = r.getBoundingClientRect(), b = sig.getBoundingClientRect(), base = probe.getBoundingClientRect().top;
+      // his shoulders touch the left leg of the A; feet on the baseline
+      leanGuy.style.left = (c.left - b.left - leanGuy.offsetWidth * .62 + c.width * .12).toFixed(1) + 'px';
+      leanGuy.style.top = (base - b.top - leanGuy.offsetHeight * .955).toFixed(1) + 'px';
+    };
+    align(); window.addEventListener('resize', align, { passive: true }); document.fonts?.ready.then(align);
+    let shown = false, tm;
+    const wave = ms => { if (reduced.matches) return; clearTimeout(tm); leanGuy.classList.add('is-waving'); tm = setTimeout(() => leanGuy.classList.remove('is-waving'), ms); };
+    leanGuy.addEventListener('click', () => wave(1800));
+    if (typeof IntersectionObserver === 'function') new IntersectionObserver(([en]) => {
+      if (en.isIntersecting && !shown) setTimeout(() => wave(2400), 350);
+      shown = en.isIntersecting;
+    }, { threshold: .6 }).observe(leanGuy);
   }
 
   // The film scene is a magnet: once part of it is on screen and scrolling
