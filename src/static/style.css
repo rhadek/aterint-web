@@ -746,3 +746,18 @@ body{background:var(--paper)}
 .signature-fill:before{content:'ATERINT'}
 body .eyebrow{color:#b3261e}
 .detail-hero .eyebrow{color:#ffab98}
+
+/* v35 – service chapters: one calm, coherent entrance
+   ease-out token for entering motion (strong ease-out) */
+:root{--ease-out:cubic-bezier(.23,1,.32,1)}
+.svc-band{transition:clip-path .9s var(--ease-out)}
+.svc-band-media img{transform:translateY(var(--band-shift,0px)) scale(1.04);transition:filter .6s ease}
+@media(min-width:1180px){.svc-band:before{transform:translateY(var(--band-shift,0px)) scale(1.12);will-change:transform}}
+/* the title block no longer travels on its own; the letters carry the entrance */
+.svc-band-title,.svc-band.is-open .svc-band-title{transform:none;transition:none}
+.fx-chapters .svc-band .fx-char{opacity:0;filter:blur(5px);transform:translateY(.32em)}
+.fx-chapters .svc-band.is-lit .fx-char{opacity:1;filter:blur(0);transform:none;transition:opacity .6s var(--ease-out),filter .6s var(--ease-out),transform .7s var(--ease-out);transition-delay:calc(var(--ci) * 22ms + 120ms)}
+.fx-chapters .svc-band.is-lit .svc-band-media:after{animation:glint 1.2s var(--ease-out) .45s both}
+.svc-band-media:after{background:linear-gradient(105deg,transparent 42%,#fff3e214 48%,#ffffff2b 50%,#fff3e214 52%,transparent 58%)}
+.fx-chapters .svc-band .ai-label{transition:opacity .5s ease,transform .5s var(--ease-out)}
+.fx-chapters .svc-band.is-lit .ai-label{transition-delay:.6s}
