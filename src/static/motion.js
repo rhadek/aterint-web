@@ -763,6 +763,32 @@
     };
     window.addEventListener('scroll', show, { passive: true }); show();
   }
+  // "Back to top" links: our own eased glide instead of the browser's smooth anchor scroll,
+  // which snap points and the wheel smoothing could cut short into a jump.
+  if (typeof window.scrollTo === 'function' && document.addEventListener) {
+    let up = 0;
+    const cancelUp = () => { if (up) { cancelAnimationFrame(up); up = 0; root.classList.remove('fx-gliding'); } };
+    document.addEventListener('click', ev => {
+      const a = ev.target.closest?.('a[href="#zacatek"]');
+      if (!a || reduced.matches || ev.button !== 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey) return;
+      ev.preventDefault();
+      cancelUp();
+      const from = window.scrollY;
+      if (from < 2) return;
+      const dur = clamp(from / window.innerHeight, 1, 6) * 110 + 600;   // ~0.7 s short, max ~1.3 s from the footer
+      const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      const t0 = performance.now();
+      root.classList.add('fx-gliding', 'fx-nosnap');
+      const step = now => {
+        const k = clamp((now - t0) / dur);
+        window.scrollTo({ top: from * (1 - ease(k)), behavior: 'instant' });
+        if (k < 1) up = requestAnimationFrame(step);
+        else { up = 0; root.classList.remove('fx-gliding'); setTimeout(() => root.classList.remove('fx-nosnap'), 300); document.getElementById('zacatek')?.focus?.({ preventScroll: true }); }
+      };
+      up = requestAnimationFrame(step);
+    });
+    ['wheel', 'touchstart', 'keydown'].forEach(type => window.addEventListener(type, cancelUp, { passive: true }));
+  }
 
   later(() => {
   // Easter egg: a small firefighter lives on the film frame. He peeks out from
@@ -1047,7 +1073,7 @@
       glide = requestAnimationFrame(step);
     }
     function settle() {
-      if (glide || gesture || reduced.matches || document.hidden || performance.now() < quietUntil || root.classList.contains('fx-wheeling')) return;
+      if (glide || gesture || reduced.matches || document.hidden || performance.now() < quietUntil || root.classList.contains('fx-wheeling') || root.classList.contains('fx-gliding')) return;
       const r = cinema.getBoundingClientRect(), vh = window.innerHeight;
       if (r.height < vh * .8) return;
       const top = window.scrollY + r.top;
