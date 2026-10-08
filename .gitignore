@@ -1,0 +1,7 @@
+dist/
+public/
+node_modules/
+__pycache__/
+production-export/
+*.zip
+_site/

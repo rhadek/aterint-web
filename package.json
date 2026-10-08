@@ -1,0 +1,1 @@
+{"name":"aterint-web","version":"1.0.0","private":true,"type":"module","scripts":{"build":"python scripts/generate.py && bash scripts/build.sh","test":"node scripts/check-site.mjs && node scripts/validate-artifact.mjs"}}

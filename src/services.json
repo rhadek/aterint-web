@@ -1,0 +1,212 @@
+[
+  {
+    "slug": "dokumentace-po-bozp-trebic",
+    "icon": "doc",
+    "name": "Dokumentace PO a BOZP",
+    "title": "Dokumentace PO a BOZP v Třebíči a okolí",
+    "description": "Zpracování a aktualizace dokumentace požární ochrany a BOZP v Třebíči a okolí. Směrnice, požární řády a evakuační plány. ATERINT.",
+    "short": "Směrnice, požární řády a evakuační plány. Přehledná dokumentace pro váš provoz.",
+    "label": "Dokumentace a aktualizace",
+    "lead": "Zpracujeme dokumentaci požární ochrany a bezpečnosti práce podle charakteru vašeho provozu. Pomůžeme s novými podklady i s aktualizací dokumentace, která už neodpovídá skutečnému stavu.",
+    "intro": "Rozsah dokumentace vychází ze začlenění provozovaných činností a z podmínek konkrétního objektu. Zpracováváme následující podklady:",
+    "items": [
+      "Organizační směrnice požární ochrany a BOZP",
+      "Požární řády a požární poplachové směrnice",
+      "Dokumentace zdolávání požáru",
+      "Požární evakuační plány – textová a grafická část",
+      "Řády ohlašovny požáru",
+      "Tematické a časové plány školení"
+    ],
+    "preparation": "Připravte existující dokumentaci, základní informace o objektu a popis vykonávaných činností. Pokud máte půdorysy nebo předchozí zápisy z kontrol, při zpracování mohou pomoci. Chybějící podklady probereme při prvním kontaktu.",
+    "audience": "Službu můžete poptat pro výrobní a skladové provozy, administrativní budovy, školy i další objekty. Dokumentaci řešíme v návaznosti na skutečné využití budovy, nikoli pouze podle jejího názvu.",
+    "faqs": [
+      [
+        "Nevím, jestli je moje dokumentace ještě použitelná. Kde začít?",
+        "Porovnejte adresu, popis činností a uspořádání prostor v podkladech se skutečností. Poznamenejte si rozdíly a připravte poslední verze dokumentů. Nemusíte sami rozhodovat, které dokumenty jsou povinné."
+      ],
+      [
+        "Co dělat, když část podkladů chybí?",
+        "Sepište, co máte k dispozici. Hodí se půdorysy, popis provozu a předchozí zápisy. Při domluvě projdeme, které informace je potřeba doplnit."
+      ],
+      [
+        "Máme více verzí jednoho dokumentu. Kterou poslat?",
+        "Pošlete poslední dostupnou verzi a uveďte, pokud si nejste jistí, zda je aktuální. Pomůže i datum poslední změny provozu."
+      ]
+    ]
+  },
+  {
+    "slug": "skoleni-po-bozp-trebic",
+    "icon": "people",
+    "name": "Školení PO a BOZP",
+    "title": "Školení PO a BOZP v Třebíči a okolí",
+    "description": "Školení požární ochrany a BOZP pro zaměstnance a vedoucí v Třebíči a okolí. Odborná příprava preventivních požárních hlídek. ATERINT.",
+    "short": "Školení PO a BOZP pro zaměstnance i vedoucí. Odborná příprava požárních hlídek.",
+    "label": "Školení a odborná příprava",
+    "lead": "Zajistíme školení požární ochrany a BOZP pro zaměstnance a vedoucí zaměstnance. Obsah domluvíme podle pracoviště, vykonávané práce a skupiny účastníků.",
+    "intro": "Školení a odbornou přípravu zajišťujeme pro zaměstnance, vedoucí zaměstnance i osoby s konkrétními úkoly v požární ochraně.",
+    "items": [
+      "Školení zaměstnanců v oblasti požární ochrany",
+      "Školení vedoucích zaměstnanců v oblasti požární ochrany",
+      "Školení zaměstnanců a vedoucích v oblasti BOZP",
+      "Odborná příprava členů preventivních požárních hlídek",
+      "Odborná příprava preventistů požární ochrany"
+    ],
+    "preparation": "Při poptávce uveďte počet účastníků, jejich pracovní pozice, místo školení a preferovaný termín. Máte-li stanovené tematické plány nebo interní směrnice, připravte je k upřesnění obsahu.",
+    "audience": "Školení lze poptat pro firmy, školy, administrativní pracoviště i další provozy. Zaměstnanci, vedoucí a členové požárních hlídek mají odlišné úkoly, proto jejich přípravu řešíme podle konkrétní role.",
+    "faqs": [
+      [
+        "Jaké informace si připravit před domluvou školení?",
+        "Počet účastníků, pracovní pozice, místo školení a to, zda jde o zaměstnance, vedoucí nebo požární hlídku. Připravte také dostupné interní podklady."
+      ],
+      [
+        "Jak předejít tomu, aby školení bylo příliš obecné?",
+        "Uveďte konkrétní práci, používané vybavení a situace, se kterými se lidé na pracovišti setkávají. To pomůže připravit obsah pro skutečný provoz."
+      ],
+      [
+        "Potřebujeme školení pro různé pracovní pozice. Jak to popsat?",
+        "Stačí jednoduchý seznam pozic a počet lidí u každé z nich. Skupiny a obsah školení pak probereme při domluvě."
+      ]
+    ]
+  },
+  {
+    "slug": "pozarni-ochrana-preventivni-prohlidky-trebic",
+    "icon": "shield",
+    "name": "Preventivní prohlídky a kontroly",
+    "title": "Požární ochrana a preventivní prohlídky v Třebíči",
+    "description": "Preventivní požární prohlídky a kontroly BOZP v Třebíči a okolí. Zápisy do požární knihy, návrhy opatření a aktualizace dokumentace. ATERINT.",
+    "short": "Kontroly provozů, zápisy do požární knihy a návrhy opatření pro odstranění závad.",
+    "label": "Prohlídky a kontroly",
+    "lead": "Pomůžeme s pravidelnou péčí o požární ochranu a bezpečnost práce. Provedeme preventivní prohlídku provozu, zaznamenáme zjištění a navrhneme konkrétní opatření.",
+    "intro": "Preventivní prohlídky zahrnují kontrolu provozu, zápis zjištění a návrh opatření. Součástí nabídky jsou také kontroly a prověrky BOZP a výkon funkce technika PO a BOZP.",
+    "items": [
+      "Preventivní požární prohlídky výrobních a dalších provozů",
+      "Prohlídky administrativních, ubytovacích a školských objektů",
+      "Zápisy do požární knihy",
+      "Návrhy opatření k řešení zjištěných závad",
+      "Aktualizace dokumentace požární ochrany",
+      "Kontroly a prověrky v oblasti BOZP",
+      "Výkon funkce technika PO a BOZP"
+    ],
+    "preparation": "Připravte požární knihu, dostupnou dokumentaci a předchozí zápisy z kontrol. Uveďte, zda potřebujete jednorázovou prohlídku, nebo chcete domluvit dlouhodobou spolupráci. Zajistěte možnost přístupu do dotčených prostor.",
+    "audience": "Prohlídky můžete poptat pro provozovny, sklady, výrobní haly, kanceláře, školy a ubytovací objekty. Konkrétní rozsah závisí na činnostech a uspořádání objektu.",
+    "faqs": [
+      [
+        "Co připravit před preventivní prohlídkou?",
+        "Požární knihu, dostupnou dokumentaci a poslední zápisy. Domluvte také přístup do prostor a člověka, který zná provoz."
+      ],
+      [
+        "Mám před návštěvou hledat závady sám?",
+        "Můžete si poznamenat zjevné překážky na cestě k východu, nepřístupné vybavení nebo změny oproti podkladům. Toto vlastní projití nenahrazuje odbornou prohlídku."
+      ],
+      [
+        "Našli jsme starý zápis s nevyřešenými body. Co s ním?",
+        "Připravte jej k prohlídce a poznamenejte, co už se změnilo. Pomůže to navázat na předchozí zjištění místo začínání od nuly."
+      ]
+    ]
+  },
+  {
+    "slug": "revize-hasicich-pristroju-hydrantu-trebic",
+    "icon": "ext",
+    "name": "Prodej a revizní činnost",
+    "title": "Revize hasicích přístrojů a hydrantů v Třebíči",
+    "description": "Kontroly, servis a prodej hasicích přístrojů a hydrantových systémů v Třebíči a okolí. Poptávky revizí požárního vybavení řeší ATERINT.",
+    "short": "Hasicí přístroje, hydrantové systémy a další požárně bezpečnostní zařízení.",
+    "label": "Prodej a servis",
+    "lead": "Prodej, revize a kontroly přenosných hasicích přístrojů, hydrantových systémů a dalších požárně bezpečnostních zařízení v Třebíči a okolí.",
+    "intro": "Zajišťujeme prodej a revizní činnost pro požární vybavení objektů. Nabídka zahrnuje:",
+    "items": [
+      "Hasicí přístroje a jejich příslušenství",
+      "Hydrantové systémy",
+      "Požární hadice a armatury",
+      "Požární klapky a stěnové uzávěry",
+      "Požární větrací mřížky",
+      "Detektory kouře",
+      "Tlakové láhve (CO₂)"
+    ],
+    "preparation": "Uveďte adresu objektu, přibližný počet hasicích přístrojů a hydrantů a požadovaný termín. Pokud máte poslední doklady o kontrolách nebo seznam zařízení, připravte je. Přístup k jednotlivým zařízením domluvíme před návštěvou.",
+    "audience": "Služba je určena firmám, správcům budov, školám a dalším provozovatelům objektů. Řešit můžete pravidelnou kontrolu stávajícího vybavení i nové přístroje pro provoz nebo stavbu.",
+    "faqs": [
+      [
+        "Co si nachystat před kontrolou hasicích přístrojů?",
+        "Adresu, přibližný počet přístrojů a hydrantů, poslední doklady a možnost přístupu ke každému zařízení. Když přesný počet neznáte, napište alespoň odhad."
+      ],
+      [
+        "Je přístroj v pořádku, když na pohled nevypadá poškozený?",
+        "Samotný vzhled provozuschopnost nepotvrdí. Vizuální prohlédnutí pomůže odhalit zjevné potíže; kontrolu zařízení svěřte odborníkovi."
+      ],
+      [
+        "Nemám poslední doklad o kontrole. Má smysl se ozvat?",
+        "Ano. Sdělte, co o zařízení víte, a připravte údaje ze štítku. Další postup domluvíme podle konkrétního stavu."
+      ]
+    ]
+  },
+  {
+    "slug": "pozarni-ucpavky-natery-trebic",
+    "icon": "wall",
+    "name": "Požární ucpávky a montážní práce",
+    "title": "Požární ucpávky, nátěry a montážní práce Třebíč",
+    "description": "Realizace a kontroly požárních ucpávek, požární nátěry dřevěných a ocelových nosných konstrukcí v Třebíči a okolí. ATERINT.",
+    "short": "Požární ucpávky a nátěry, vybavení staveb, požární dveře a zasklení.",
+    "label": "Realizace a kontroly",
+    "lead": "Zajišťujeme požární ucpávky, požární nátěry a vybavení staveb prvky požární ochrany, včetně dodávky a montáže.",
+    "intro": "Nabídka zahrnuje přípravu a vybavení stavby z hlediska požární ochrany. Konkrétní provedení vychází z projektových podkladů a podmínek na místě.",
+    "items": [
+      "Zhotovení požárních ucpávek a zajištění jejich kontrol",
+      "Požární nátěry dřevěných a ocelových nosných konstrukcí a zajištění jejich kontrol",
+      "Vybavení stavby hasicími přístroji a hydrantovými systémy, včetně montáže a výchozí revize",
+      "Vybavení detektory kouře a bezpečnostními tabulkami",
+      "Požární klapky a stěnové požární uzávěry",
+      "Dodávka a montáž požárních dveří a požárního zasklení"
+    ],
+    "preparation": "Připravte adresu stavby, fotografie dotčených míst, projektové podklady a požadovaný termín. U prostupů uveďte, jaké instalace jimi procházejí. Další informace si vyžádáme podle konkrétního řešení.",
+    "audience": "Službu můžete poptat při výstavbě, úpravách objektu nebo při řešení stávajících prostupů a konstrukcí. Před zahájením je potřeba vyjasnit technické zadání a přístup na místo.",
+    "faqs": [
+      [
+        "Jaké fotografie se hodí k prvnímu posouzení prostupu?",
+        "Vyfoťte celé místo i detail prostupu a vedených instalací. Přidejte přibližné rozměry a dostupné projektové podklady. Fotografie nemusí stačit pro konečný návrh."
+      ],
+      [
+        "Změnily se instalace v místě stávající ucpávky. Co připravit?",
+        "Poznamenejte, co se změnilo, a připravte dokumentaci nebo fotografie původního a současného stavu, pokud je máte. Opravu a vhodné řešení je potřeba posoudit podle konkrétního prostupu."
+      ],
+      [
+        "Co potřebujete vědět pro poptávku požárního nátěru?",
+        "Typ konstrukce, její rozměry, stav povrchu a projektové zadání. K tomu adresu, přístup na místo a požadovaný termín."
+      ]
+    ]
+  },
+  {
+    "slug": "bezpecnostni-tabulky-pozarni-vybaveni-trebic",
+    "icon": "sign",
+    "name": "Bezpečnostní tabulky a vybavení",
+    "title": "Bezpečnostní tabulky a požární vybavení Třebíč",
+    "description": "Bezpečnostní a fotoluminiscenční tabulky, detektory kouře a požární vybavení objektů v Třebíči a okolí. Dodávky a montáž ATERINT.",
+    "short": "Bezpečnostní a fotoluminiscenční tabulky, detektory kouře a vybavení objektů.",
+    "label": "Dodávka a montáž",
+    "lead": "Dodáme bezpečnostní značení a požární vybavení pro váš objekt. Pomůžeme upřesnit poptávku tabulek, detektorů kouře i souvisejících prvků požární ochrany.",
+    "intro": "Prodáváme bezpečnostní tabulky, fotoluminiscenční značení a další požární vybavení. Dodávku lze spojit s vybavením stavby a montáží.",
+    "items": [
+      "Bezpečnostní tabulky a značky",
+      "Fotoluminiscenční tabulky",
+      "Detektory kouře",
+      "Požární větrací mřížky",
+      "Požární hadice, armatury a příslušenství hasicích přístrojů"
+    ],
+    "preparation": "Uveďte, jaké vybavení potřebujete, požadovaný počet a adresu objektu. U bezpečnostních tabulek pomohou fotografie nebo seznam míst, která mají být označena. Pokud potřebujete také montáž, napište to do poptávky.",
+    "audience": "Dodávky můžete poptat pro novou stavbu, rekonstrukci i doplnění stávajícího provozu. Rozsah a konkrétní výrobky stanovíme podle zadání.",
+    "faqs": [
+      [
+        "Co uvést při objednávce bezpečnostních tabulek?",
+        "Požadovaný symbol nebo text, počet kusů, rozměry a místo použití. Pokud si s výběrem nejste jistí, připravte fotografii místa a dostupné podklady."
+      ],
+      [
+        "Potřebuji značení doplnit v celém objektu. Kde začít?",
+        "Sepište místa, která chcete řešit, a připravte půdorys nebo fotografie. Výběr a umístění značení probereme v souvislosti s konkrétním objektem."
+      ],
+      [
+        "Chceme vybavení i montáž. Jak to napsat do poptávky?",
+        "Uveďte typ a počet prvků a napište, že potřebujete také montáž. Přidejte adresu objektu a informace o přístupu na místo."
+      ]
+    ]
+  }
+]

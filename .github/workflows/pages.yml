@@ -1,0 +1,65 @@
+# Automatické sestavení a zveřejnění webu na GitHub Pages při každém pushi do main.
+#
+# Bez vlastní domény běží web na https://<uzivatel>.github.io/<repozitar>/
+# (pracovní verze, zakázaná indexace vyhledávači).
+#
+# Pro vlastní doménu nastavte v repozitáři Settings → Secrets and variables
+# → Actions → Variables proměnnou CUSTOM_DOMAIN (např. aterint.com).
+# Web se pak sestaví jako produkční (indexovatelný) pro https://<doména>.
+name: Nasazení na GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Instalace Pillow
+        run: pip install pillow
+
+      - name: Sestavení webu
+        env:
+          CUSTOM_DOMAIN: ${{ vars.CUSTOM_DOMAIN }}
+          REPO: ${{ github.event.repository.name }}
+          OWNER: ${{ github.repository_owner }}
+        run: |
+          if [ -n "$CUSTOM_DOMAIN" ]; then
+            python scripts/generate.py --production --origin "https://$CUSTOM_DOMAIN"
+            python scripts/pages-prepare.py --base / --cname "$CUSTOM_DOMAIN" --out _site
+          else
+            owner_lc=$(echo "$OWNER" | tr '[:upper:]' '[:lower:]')
+            python scripts/generate.py --origin "https://$owner_lc.github.io/$REPO"
+            python scripts/pages-prepare.py --base "/$REPO/" --out _site
+          fi
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

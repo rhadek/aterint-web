@@ -1,0 +1,73 @@
+ATERINT — KOMPLETNÍ EXPORT WEBU, VERZE 12
+
+Web: https://aterint-web-trebic.uzveo.chatgpt.site/
+Projekt: appgprj_6ac614d8eef48191b99c19230dc509d1
+Zdrojový commit: fcc1142114eca6d6923a99819b685f9cd214dbdb
+Export: 8. října 2026
+
+Tento archiv odpovídá poslední zveřejněné verzi 12. Obsahuje všechny
+zdrojové soubory projektu, webové fotografie, video, písma, ikony,
+sestavenou statickou podobu webu, Worker a dokumentaci.
+Poslední navržená úprava proporcí 40 : 60 nebyla dosud provedena.
+
+CO JE KDE
+src/home.html             Úvodní stránka a její sekce.
+src/services.json         Údaje o službách a podklady podstránek.
+src/static/style.css      Kompletní vzhled a responzivní pravidla.
+src/static/motion.js      Animace a interakce.
+src/static/assets/        Všechny webové obrázky, video, písma a ikony.
+scripts/generate.py       Generátor stránek, SEO a serverových hlaviček.
+public/                   Hotový statický web pro náhled a vlastní hosting.
+worker/index.js           Samostatná serverová verze s vloženými médii.
+dist/                     Sestavená serverová verze pro Sites.
+README.md                 Podrobný návod, nasazení a SEO.
+MEDIA-SOURCES.md           Původ použitých médií.
+FONT-LICENSE.txt           Licence písma.
+EXPORT-MANIFEST.json       Seznam souborů a jejich kontrolní součty SHA-256.
+
+RYCHLÉ PROHLÉDNUTÍ
+1. Rozbalte ZIP.
+2. Otevřete terminál ve složce aterint-web.
+3. S nainstalovaným Pythonem 3 spusťte:
+   python -m http.server 8080 --directory public
+4. V prohlížeči otevřete http://localhost:8080
+   Na Windows lze místo python použít py.
+   Server ukončíte Ctrl+C. HTML neotvírejte přímo dvojklikem;
+   web používá adresy souborů od kořene serveru.
+
+ÚPRAVY A SESTAVENÍ
+Změňte zdrojáky v src/ nebo šablony a kontakty v scripts/generate.py.
+Potom spusťte:
+   python scripts/generate.py
+Pro kontrolu použijte Node.js 22 nebo novější:
+   node scripts/check-motion.mjs
+   node scripts/check-site.mjs
+Serverové sestavení v prostředí s Bash (např. Linux, macOS nebo WSL):
+   bash scripts/build.sh
+   node scripts/validate-artifact.mjs
+Instalace npm balíčků není potřeba.
+
+VLASTNÍ DOMÉNA ATERINT.COM
+Výchozí export odpovídá pracovnímu webu na Sites a má zakázanou indexaci.
+Před skutečným nasazením na aterint.com vytvořte produkční výstup:
+   python scripts/generate.py --production --origin https://aterint.com
+Na vlastní hosting nahrajte obsah public/. Podrobný postup, HTTPS,
+přesměrování a kontroly bezpečnostních hlaviček jsou v README.md.
+Součástí archivu nejsou účty hostingu, přístupové tokeny ani DNS nastavení.
+Fotografie a video jsou webové podklady projektu; nejde o původní
+neupravené kamerové soubory nebo samostatný soubor návrhu ve Figmě.
+
+OVĚŘENÍ
+Export byl sestaven z uloženého commitu verze 12. Prošly kontroly
+9 obsahových stránek, 235 interních odkazů a souborů, interakcí,
+SEO, bezpečnostních hlaviček a serverového sestavení.
+V tomto prostředí nebyla dostupná vizuální kontrola v prohlížeči.
+
+GITHUB PAGES
+Repozitář obsahuje workflow .github/workflows/pages.yml. Každý push do
+větve main web automaticky sestaví a zveřejní na
+https://rhadek.github.io/aterint-web/ (pracovní verze bez indexace).
+Jednorázově je potřeba v GitHubu: Settings → Pages → Source: GitHub Actions.
+Vlastní doména: Settings → Secrets and variables → Actions → Variables
+→ CUSTOM_DOMAIN = aterint.com, potom Settings → Pages → Custom domain
+a u registrátora domény nastavit DNS podle návodu GitHubu.
