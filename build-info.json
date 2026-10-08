@@ -12,16 +12,16 @@
     "/soukromi/"
   ],
   "assets": 22,
-  "workerBytes": 3075109,
+  "workerBytes": 3080590,
   "pageSecurity": {
-    "/": "default-src 'none'; script-src 'self' 'sha256-UHcyf6V/vRDbGPRIs/jth4pVwAh44Lh8+lWTa9hpVa4='; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests",
+    "/": "default-src 'none'; script-src 'self' 'sha256-1P5jF24uwb/niuMiXEa0Gmk7sgREh48puFQRXupCj1A='; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests",
     "/sluzby/dokumentace-po-bozp-trebic/": "default-src 'none'; script-src 'self' 'sha256-azesK6NbjBFdpxeOjEOcDslQvDkJcHu+AaOA6bBAWYQ='; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests",
     "/sluzby/skoleni-po-bozp-trebic/": "default-src 'none'; script-src 'self' 'sha256-nxACjkZXaTPucgFZyqdkfhD4DnIDGpRY6HVX90ycwEE='; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests",
     "/sluzby/pozarni-ochrana-preventivni-prohlidky-trebic/": "default-src 'none'; script-src 'self' 'sha256-WxEjiSQ+ibvnyv4Nru0B2CF/fK9s8NXH0383n0YPRe4='; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests",
     "/sluzby/revize-hasicich-pristroju-hydrantu-trebic/": "default-src 'none'; script-src 'self' 'sha256-Ft+4rZ1SrzCanCSw5G6QxKa0n36OcQZOZAg4T3iK0Kk='; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests",
     "/sluzby/pozarni-ucpavky-natery-trebic/": "default-src 'none'; script-src 'self' 'sha256-VRPu51aHKGcatkYrnwTmGjYTOOE661cDzu/4FlXcFGc='; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests",
     "/sluzby/bezpecnostni-tabulky-pozarni-vybaveni-trebic/": "default-src 'none'; script-src 'self' 'sha256-UqSsCV6PSRKkx7+DZdgCXdDXZqHHA0UvBm2gj2R0JxM='; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests",
-    "/soukromi/": "default-src 'none'; script-src 'self' 'sha256-KLzzEmp1eIn5LBRQDL+rdFerbdeAJhFnz2b+mdTj25o='; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests",
+    "/soukromi/": "default-src 'none'; script-src 'self' 'sha256-7tDYdSeNfpe5ulMNm9rGvLCX/wETbjZ4I06sL1UR1mY='; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests",
     "/404/": "default-src 'none'; script-src 'self' 'sha256-YNMpOrxSEaWgYwzhpeUPVBNUKK4E89d/05G/CthKgGo='; style-src 'self'; img-src 'self'; font-src 'self'; media-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
   }
 }

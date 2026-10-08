@@ -730,6 +730,14 @@
     window.addEventListener('fx-wheel-end', () => window.dispatchEvent(new Event('scroll')));
   }
 
+  // Back-to-top button shows once the visitor has left the first screen.
+  const toTop = document.querySelector('.to-top');
+  if (toTop) {
+    const foot = document.querySelector('.technical-footer');
+    const show = () => toTop.classList.toggle('is-shown', window.scrollY > window.innerHeight * .9 && !(foot && foot.getBoundingClientRect().top < window.innerHeight * .85));
+    window.addEventListener('scroll', show, { passive: true }); show();
+  }
+
   // The film scene is a magnet: once part of it is on screen and scrolling
   // pauses, the page glides so the film fills the screen. A new gesture
   // always cancels the glide immediately.

@@ -634,3 +634,9 @@ html.film-snap{scroll-snap-type:y proximity;scroll-padding-top:0}
 .fx-wheeling{scroll-behavior:auto!important}
 .fx-nosnap{scroll-snap-type:none!important}
 .fx-gliding{scroll-behavior:auto!important}
+/* v19 – floating back-to-top */
+.to-top{position:fixed;right:clamp(14px,2.2vw,32px);bottom:calc(clamp(14px,2.2vw,32px) + env(safe-area-inset-bottom,0px));z-index:40;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:#151817;color:#f4efe6;font-size:20px;box-shadow:0 10px 30px #0003;border:1px solid #ffffff1a;transition:opacity .4s ease,transform .5s cubic-bezier(.16,1,.3,1),background .3s}
+.to-top:hover{background:#d83229;text-decoration:none;transform:translateY(-3px)}
+.to-top:focus-visible{outline:2px solid #d83229;outline-offset:3px}
+.fx-ready .to-top:not(.is-shown){opacity:0;transform:translateY(16px) scale(.9);pointer-events:none}
+@media(prefers-reduced-motion:reduce){.to-top{transition:none}}
