@@ -778,3 +778,6 @@ body .eyebrow{color:#b3261e}
 
 /* v40: rychlá odezva dotyku na odkazech a tlačítkách */
 a,button,summary,label{touch-action:manipulation}
+/* v41: viditelné zaměření videa z klávesnice */
+.cinema-frame:has(video:focus-visible){outline:3px solid var(--red-light);outline-offset:5px}
+video:focus-visible{outline:3px solid var(--red-light);outline-offset:-3px}

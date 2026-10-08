@@ -34,7 +34,10 @@ def minify_css(c):
 css = minify_css((ROOT / 'src/static/style.css').read_text())
 CSS = '/assets/style.' + hashlib.sha256(css.encode()).hexdigest()[:12] + '.css'
 (OUT / CSS.lstrip('/')).write_text(css)
-motion = (ROOT / 'src/static/motion.js').read_text()
+def minify_js(c):
+    # safe, newline-preserving shrink: drop whole-line comments, indentation and blank lines
+    return '\n'.join(l.strip() for l in c.splitlines() if l.strip() and not l.strip().startswith('//'))+'\n'
+motion = minify_js((ROOT / 'src/static/motion.js').read_text())
 MOTION = '/assets/motion.' + hashlib.sha256(motion.encode()).hexdigest()[:12] + '.js'
 (OUT / MOTION.lstrip('/')).write_text(motion)
 services = json.loads((ROOT / 'src/services.json').read_text())
