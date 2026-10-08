@@ -612,41 +612,26 @@
   window.addEventListener('resize', schedule, { passive: true });
   schedule();
 
-  // Service sheets: the next sheet pushes the previous one back (scale + dim);
-  // a sheet arriving opens its photo and slides the photo inside its title.
-  const sheets = [...document.querySelectorAll('.svc-card')];
-  if (sheets.length) {
-    const inners = sheets.map(c => c.querySelector('.svc-inner'));
-    const photos = sheets.map(c => c.querySelector('.svc-photo'));
-    const imgs = sheets.map(c => c.querySelector('.svc-photo img'));
-    const titles = sheets.map(c => c.querySelector('.svc-title'));
+  // Service chapters: each full-width illustration opens from inset to edge-to-edge
+  // as it reaches the middle of the screen; the photo drifts slower than the page.
+  const bands = [...document.querySelectorAll('.svc-band')];
+  if (bands.length) {
     let queued = false;
-    const stacked = () => window.matchMedia('(min-width: 900px) and (min-height: 600px)').matches;
     function paint() {
       queued = false;
-      const vh = window.innerHeight, motion = !reduced.matches, stack = stacked();
-      sheets.forEach((card, i) => {
-        const r = card.getBoundingClientRect();
-        const stick = parseFloat(getComputedStyle(card).top) || 0;
-        // arrival 0 → 1 while the sheet travels up the screen
-        const arrive = motion ? clamp(1 - (r.top - (stack ? stick : vh * .15)) / (vh * .85)) : 1;
-        const e = 1 - Math.pow(1 - arrive, 3);
-        photos[i].style.setProperty('--clip', ((1 - e) * 9).toFixed(2) + '%');
-        imgs[i].style.setProperty('--zoom', (1.2 - e * .16).toFixed(4));
-        imgs[i].style.setProperty('--shift', ((1 - e) * 40).toFixed(1) + 'px');
-        titles[i].style.setProperty('--title-y', (30 + e * 40).toFixed(1) + '%');
-        titles[i].style.setProperty('--title-x', (60 - e * 20).toFixed(1) + '%');
-        // depth: how far the following sheet (or the film) has covered this one
-        let depth = 0;
-        if (stack && motion) {
-          const next = sheets[i + 1] || null;
-          if (next) {
-            const nr = next.getBoundingClientRect(), nstick = parseFloat(getComputedStyle(next).top) || 0;
-            depth = clamp(1 - (nr.top - nstick) / (r.height || vh));
-          }
-        }
-        inners[i].style.transform = depth ? `scale(${(1 - depth * .06).toFixed(4)}) translateY(${(-depth * 10).toFixed(1)}px)` : '';
-        inners[i].style.setProperty('--dim', (depth * .2).toFixed(3));
+      const vh = window.innerHeight, vw = window.innerWidth, motion = !reduced.matches;
+      bands.forEach(band => {
+        const r = band.getBoundingClientRect();
+        const open = motion ? clamp((vh - r.top) / (vh * .75)) : 1;
+        const e = 1 - Math.pow(1 - open, 3);
+        const through = clamp((vh - r.top) / (vh + r.height));
+        const inset = (1 - e) * Math.min(vw * .07, 110);
+        band.style.setProperty('--band-inset', inset.toFixed(1) + 'px');
+        band.style.setProperty('--band-radius', ((1 - e) * 28).toFixed(1) + 'px');
+        const img = band.querySelector('img'), title = band.querySelector('.svc-band-title');
+        img?.style.setProperty('--band-shift', motion ? ((through - .5) * -14).toFixed(2) + '%' : '0px');
+        img?.style.setProperty('--band-zoom', motion ? (1.12 - e * .1).toFixed(4) : '1');
+        title?.style.setProperty('--title-lift', motion ? ((1 - e) * 60).toFixed(1) + 'px' : '0px');
       });
     }
     const ask = () => { if (!queued) { queued = true; requestAnimationFrame(paint); } };

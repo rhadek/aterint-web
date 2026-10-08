@@ -76,11 +76,15 @@ def write_page(path, title, description, content, faqs=None, service=None, index
     target.parent.mkdir(parents=True,exist_ok=True);target.write_text(result)
 
 service_entries=''
-SERVICE_PHOTOS=[('office-v1.webp',1280,960),('office-v1.webp',1280,960),('inspection-v1.webp',1280,960),('workshop-v1.webp',1280,960),('construction-v1.webp',1280,853),('construction-v1.webp',1280,853)]
-for i,service in enumerate(services):
-    items=''.join('<li>'+E(item)+'</li>' for item in service['items'])
-    photo,pw,ph=SERVICE_PHOTOS[i]
-    service_entries+=f'<article class="svc-card" id="sluzba-{i+1}" aria-labelledby="sluzba-{i+1}-nazev"><div class="svc-inner"><div class="svc-head"><span class="svc-index" aria-hidden="true">{i+1:02d} / {len(services):02d}</span><h3 class="svc-title" id="sluzba-{i+1}-nazev">{E(service["name"])}</h3></div><figure class="svc-photo"><img src="/assets/media/{photo}" width="{pw}" height="{ph}" alt="" loading="lazy" decoding="async"><figcaption>Ilustrační snímek</figcaption></figure><div class="svc-body"><p class="svc-lead">{E(service["short"])}</p><ul class="svc-items">{items}</ul><a class="svc-link" href="/sluzby/{service["slug"]}/">Podrobnosti služby <span aria-hidden="true">↗</span></a></div></div></article>'
+AI_NOTE='Ilustrační obrázek vytvořený pomocí AI'
+CHAPTERS=[('Podklady a příprava','office-v1.webp',1280,960),('Kontroly a vybavení','inspection-v1.webp',1280,960),('Realizace a montáže','construction-v1.webp',1280,853)]
+for c,(chapter,photo,pw,ph) in enumerate(CHAPTERS):
+    pair=''
+    for i in (2*c,2*c+1):
+        service=services[i]
+        items=''.join('<li>'+E(item)+'</li>' for item in service['items'])
+        pair+=f'<article class="svc-item" id="sluzba-{i+1}" aria-labelledby="sluzba-{i+1}-nazev"><span class="svc-index" aria-hidden="true">{i+1:02d}</span><h3 class="svc-name" id="sluzba-{i+1}-nazev">{E(service["name"])}</h3><p class="svc-lead">{E(service["short"])}</p><ul class="svc-items">{items}</ul><a class="svc-link" href="/sluzby/{service["slug"]}/">Podrobnosti služby <span aria-hidden="true">↗</span></a></article>'
+    service_entries+=f'<div class="svc-chapter"><figure class="svc-band"><div class="svc-band-media"><img src="/assets/media/{photo}" width="{pw}" height="{ph}" alt="" loading="lazy" decoding="async"></div><figcaption class="svc-band-caption"><span class="svc-band-range" aria-hidden="true">{2*c+1:02d}–{2*c+2:02d}</span><span class="svc-band-title">{E(chapter)}</span></figcaption><small class="ai-label">{AI_NOTE}</small></figure><div class="svc-pair">{pair}</div></div>'
 
 home=(ROOT/'src/home.html').read_text().format(service_entries=service_entries,contact_section=contact())
 write_page('/','Požární ochrana, BOZP a revize Třebíč | ATERINT','Služby ATERINT v Třebíči: dokumentace PO a BOZP, školení, preventivní prohlídky, revize požárního vybavení, požární ucpávky a montážní práce.',home)
