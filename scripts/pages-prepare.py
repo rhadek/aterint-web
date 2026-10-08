@@ -39,7 +39,9 @@ if base != '/':
     for f in out.rglob('*'):
         if f.suffix == '.html':
             t = f.read_text()
-            f.write_text(attr.sub(lambda m: f'{m.group(1)}="{prefix}/', t))
+            t = attr.sub(lambda m: f'{m.group(1)}="{prefix}/', t)
+            t = re.sub(r'srcset="([^"]*)"', lambda m: 'srcset="' + re.sub(r'(^|,\s*)/(?!/)', lambda n: n.group(1) + prefix + '/', m.group(1)) + '"', t)
+            f.write_text(t)
         elif f.suffix == '.css':
             t = f.read_text()
             f.write_text(css_url.sub(lambda m: f'url({m.group(1)}{prefix}/', t))

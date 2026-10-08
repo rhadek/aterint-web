@@ -389,7 +389,6 @@
   filmMotionToggle?.addEventListener('click', () => {
     const paused = filmScene.classList.toggle('cinema-paused');
     filmMotionToggle.setAttribute('aria-pressed', String(paused));
-    filmMotionToggle.setAttribute('aria-label', paused ? 'Spustit pohyb pozadí' : 'Pozastavit pohyb pozadí');
     filmMotionToggle.querySelector('span').textContent = paused ? '▶' : 'Ⅱ';
   });
   function pauseFilm() {
@@ -481,6 +480,8 @@
   const root = document.documentElement;
   if (!window.requestAnimationFrame || typeof root?.classList?.add !== 'function' || typeof document.createElement !== 'function') return;
   const clamp = (n, a = 0, b = 1) => Math.min(b, Math.max(a, n));
+  // Effects below the first screen start once the browser is idle, so the first paint stays light.
+  const later = f => (window.requestIdleCallback ? window.requestIdleCallback(f, { timeout: 1200 }) : setTimeout(f, 250));
   root.classList.add('fx-ready');
 
   // Embers rising from the hero: the one signature effect.
@@ -618,6 +619,7 @@
   window.addEventListener('resize', schedule, { passive: true });
   schedule();
 
+  later(() => {
   // Service chapters: each full-width illustration opens from inset to edge-to-edge
   // as it reaches the middle of the screen; the photo drifts slower than the page.
   const bands = [...document.querySelectorAll('.svc-band')];
@@ -656,10 +658,11 @@
       const title = band.querySelector('.svc-band-title');
       if (title && !title.dataset.split) {
         title.dataset.split = '1';
-        title.setAttribute('aria-label', title.textContent);
+        const sr = document.createElement('span'); sr.className = 'sr-only'; sr.textContent = title.textContent;
         let ci = 0;
         const words = title.textContent.split(' ');
         title.textContent = '';
+        title.appendChild(sr);
         words.forEach((w, wi) => {
           const word = document.createElement('span'); word.className = 'fx-word'; word.setAttribute('aria-hidden', 'true');
           for (const ch of w) { const c = document.createElement('span'); c.className = 'fx-char'; c.textContent = ch; c.style.setProperty('--ci', ci++); word.appendChild(c); }
@@ -699,6 +702,7 @@
     if (!motionOn()) document.querySelectorAll('.svc-band,.svc-item').forEach(el => el.classList.add('is-lit', 'is-in'));
   }
 
+  });
   // Smooth wheel: mouse-wheel steps become one continuous, eased movement.
   // Only plain vertical wheel scrolling of the page is smoothed; zoom, horizontal
   // gestures, touch, keyboard and inner scroll areas stay native.
@@ -755,6 +759,7 @@
     window.addEventListener('scroll', show, { passive: true }); show();
   }
 
+  later(() => {
   // Easter egg: a small firefighter lives on the film frame. He peeks out from
   // behind it, climbs onto the top edge, and puts out flames that flare up there.
   const cineBox = document.querySelector('.cinema-container');
@@ -921,6 +926,7 @@
     });
   }
 
+  });
   // Welcome: on every load the firefighter leans in from the bottom-right corner,
   // waves, and ducks away again. Quick, wordless, and gone before you scroll.
   const hello = document.querySelector('.ff-hello');
@@ -944,6 +950,7 @@
     })();
   }
 
+  later(() => {
   // Footer: a relaxed firefighter leaning against the "A" waves whenever the footer comes into view.
   const leanGuy = document.querySelector('.ff-lean');
   if (leanGuy) {
@@ -1012,6 +1019,7 @@
     });
   }
 
+  });
   // The film scene is a magnet: once part of it is on screen and scrolling
   // pauses, the page glides so the film fills the screen. A new gesture
   // always cancels the glide immediately.
