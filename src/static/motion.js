@@ -954,6 +954,42 @@
     }, { threshold: .6 }).observe(leanGuy);
   }
 
+  // FAQ: the dark panel opens out of the light page, like the service photos.
+  const faqPanel = document.querySelector('.home-page .faq-section');
+  if (faqPanel) {
+    let q = false;
+    const paintFaq = () => {
+      q = false;
+      const r = faqPanel.getBoundingClientRect(), vh = window.innerHeight, vw = window.innerWidth;
+      const enter = clamp((vh - r.top) / (vh * .7)), leave = clamp(r.bottom / (vh * .7));
+      const e = reduced.matches ? 1 : 1 - Math.pow(1 - Math.min(enter, leave), 3);
+      faqPanel.style.setProperty('--faq-inset', ((1 - e) * Math.min(vw * .06, 90) + Math.min(vw * .012, 16)).toFixed(1) + 'px');
+      faqPanel.style.setProperty('--faq-r', (14 + (1 - e) * 26).toFixed(1) + 'px');
+    };
+    const askFaq = () => { if (!q) { q = true; requestAnimationFrame(paintFaq); } };
+    window.addEventListener('scroll', askFaq, { passive: true }); window.addEventListener('resize', askFaq, { passive: true }); askFaq();
+    // answers slide open and closed instead of jumping
+    faqPanel.querySelectorAll('.faq-list details').forEach(d => {
+      const sum = d.querySelector('summary');
+      sum.addEventListener('click', ev => {
+        if (reduced.matches || typeof d.animate !== 'function') return;
+        ev.preventDefault();
+        const start = d.offsetHeight;
+        if (d.open) {
+          const end = sum.offsetHeight;
+          d.style.overflow = 'hidden';
+          d.animate([{ height: start + 'px' }, { height: end + 'px' }], { duration: 380, easing: 'cubic-bezier(.3,0,.2,1)' }).onfinish = () => { d.open = false; d.style.overflow = ''; };
+          d.classList.add('is-closing'); setTimeout(() => d.classList.remove('is-closing'), 380);
+        } else {
+          d.open = true;
+          const end = d.offsetHeight;
+          d.style.overflow = 'hidden';
+          d.animate([{ height: start + 'px' }, { height: end + 'px' }], { duration: 480, easing: 'cubic-bezier(.16,1,.3,1)' }).onfinish = () => { d.style.overflow = ''; };
+        }
+      });
+    });
+  }
+
   // The film scene is a magnet: once part of it is on screen and scrolling
   // pauses, the page glides so the film fills the screen. A new gesture
   // always cancels the glide immediately.
