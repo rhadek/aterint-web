@@ -812,7 +812,7 @@ header .nav{position:relative}
 .ff-hello-eyes{transform-box:fill-box;transform-origin:center;animation:ff-blink 3.8s infinite}
 @media(prefers-reduced-motion:reduce){.ff-hello{display:none}}
 /* v25b – dedicated leaning pose in the footer */
-.ff-lean{position:absolute;z-index:1;width:clamp(46px,4.6vw,84px);cursor:pointer}
+.ff-lean{position:absolute;z-index:1;width:60px;cursor:pointer}
 .ff-lean svg{display:block;width:100%;height:auto;overflow:visible;filter:drop-shadow(0 4px 5px #0002)}
 .ff-lean-wave{display:none}
 .ff-lean.is-waving .ff-lean-wave{display:inline}

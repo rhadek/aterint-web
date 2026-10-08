@@ -928,6 +928,32 @@
     })();
   }
 
+  // Footer: a relaxed firefighter leaning against the "A" waves whenever the footer comes into view.
+  const leanGuy = document.querySelector('.ff-lean');
+  if (leanGuy) {
+    const sig = leanGuy.parentElement, outline = sig.querySelector('.signature-outline');
+    const probe = document.createElement('span'); probe.className = 'ff-baseline'; outline?.appendChild(probe);
+    const align = () => {
+      const node = outline?.firstChild; if (!node || typeof document.createRange !== 'function') return;
+      const r = document.createRange(); r.setStart(node, 0); r.setEnd(node, 1);
+      const c = r.getBoundingClientRect(), b = sig.getBoundingClientRect(), base = probe.getBoundingClientRect().top;
+      // scale him to the letters: as tall as the capital A, back against its left leg, feet on the baseline
+      const fs = parseFloat(getComputedStyle(sig).fontSize) || 100, cap = fs * .72;
+      const H = cap * 1.02, W = H * 60 / 92;
+      leanGuy.style.width = W.toFixed(1) + 'px';
+      leanGuy.style.left = (c.left - b.left + fs * (.02 + .31 * .56) - W * .76).toFixed(1) + 'px';
+      leanGuy.style.top = (base - b.top - H * .952).toFixed(1) + 'px';
+    };
+    align(); window.addEventListener('resize', align, { passive: true }); document.fonts?.ready.then(align);
+    let shown = false, tm;
+    const wave = ms => { if (reduced.matches) return; clearTimeout(tm); leanGuy.classList.add('is-waving'); tm = setTimeout(() => leanGuy.classList.remove('is-waving'), ms); };
+    leanGuy.addEventListener('click', () => wave(1800));
+    if (typeof IntersectionObserver === 'function') new IntersectionObserver(([en]) => {
+      if (en.isIntersecting && !shown) setTimeout(() => wave(2400), 350);
+      shown = en.isIntersecting;
+    }, { threshold: .6 }).observe(leanGuy);
+  }
+
   // The film scene is a magnet: once part of it is on screen and scrolling
   // pauses, the page glides so the film fills the screen. A new gesture
   // always cancels the glide immediately.
