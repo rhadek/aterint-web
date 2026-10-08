@@ -800,7 +800,13 @@
         // 5. puts it out
         ff.classList.add('spraying'); await sleep(900);
         flame.classList.add('is-out'); await sleep(900);
-        ff.classList.remove('spraying'); await sleep(350);
+        ff.classList.remove('spraying'); await sleep(500);
+        // ...but it flickers back for a moment
+        flame.className = 'ff-flame is-burning is-flicker'; await sleep(250);
+        ff.classList.add('alert'); ff.classList.remove('hop'); void ff.offsetWidth; ff.classList.add('hop'); await sleep(450); ff.classList.remove('alert');
+        ff.classList.add('spraying'); await sleep(450);
+        flame.classList.add('is-out'); await sleep(700);
+        ff.classList.remove('spraying'); await sleep(300);
         flame.className = 'ff-flame';
         ff.classList.remove('hop'); void ff.offsetWidth; ff.classList.add('hop');
         await sleep(900);
@@ -831,47 +837,77 @@
     const wait = ms => new Promise(res => { let left = ms, last = performance.now(); (function t(now) { if (inView && !document.hidden) left -= now - last; last = now; left > 0 ? requestAnimationFrame(t) : res(); })(last); });
     const hop = () => { ff.classList.remove('hop'); void ff.offsetWidth; ff.classList.add('hop'); };
     const wave = async ms => { ff.classList.add('waving'); await wait(ms); ff.classList.remove('waving'); };
-    if (mode === 'wave') {
-      // stand on the top of the last letter of the wordmark
-      const sig = spot.parentElement, text = sig.querySelector('.signature-fill') || sig.querySelector('.signature-outline');
+    if (mode === 'lean') {
+      // relaxed, leaning against the left leg of the "A" of the wordmark, standing on its baseline
+      stage.classList.add('ff-relaxed', 'is-peeking', 'is-up');
+      const sig = spot.parentElement, outline = sig.querySelector('.signature-outline');
+      const probe = document.createElement('span'); probe.className = 'ff-baseline';
+      outline?.appendChild(probe);
       const align = () => {
-        const node = text?.firstChild; if (!node || typeof document.createRange !== 'function') return;
-        const r = document.createRange(); r.setStart(node, node.length - 1); r.setEnd(node, node.length);
-        const c = r.getBoundingClientRect(), b = sig.getBoundingClientRect();
-        spot.style.left = (c.left - b.left + c.width / 2 - spot.offsetWidth / 2).toFixed(1) + 'px';
+        const node = outline?.firstChild; if (!node || typeof document.createRange !== 'function') return;
+        const r = document.createRange(); r.setStart(node, 0); r.setEnd(node, 1);
+        const c = r.getBoundingClientRect(), b = sig.getBoundingClientRect(), base = probe.getBoundingClientRect().top;
+        spot.style.left = (c.left - b.left - spot.offsetWidth * .62 + c.width * .06).toFixed(1) + 'px';
+        spot.style.top = (base - b.top - spot.offsetHeight).toFixed(1) + 'px';
       };
       align(); window.addEventListener('resize', align, { passive: true }); document.fonts?.ready.then(align);
       x = (spot.clientWidth - ff.offsetWidth) / 2; dir = -1; place();
     } else {
       x = spot.clientWidth * .5; dir = 1; place(); bubble.textContent = '?';
     }
-    ff.addEventListener('click', () => { hop(); if (mode === 'wave') wave(1600); });
+    ff.addEventListener('click', () => { if (mode === 'lean') wave(1800); else hop(); });
     new IntersectionObserver(([en]) => {
+      const was = inView;
       inView = en.isIntersecting;
+      if (mode === 'lean') { if (inView && !was) wait(350).then(() => wave(2400)); return; }
       if (!inView || started) return;
       started = true;
       (async () => {
         await wait(400);
         stage.classList.add('is-peeking'); await wait(900);
-        if (mode === 'wave') {
-          dir = 1; place(); await wait(350); dir = -1; place(); await wait(300);
-          stage.classList.add('is-up'); await wait(500);
-          await wave(2600); hop();
-        } else {
-          stage.classList.add('is-up'); await wait(400);
-          while (true) {
-            ff.classList.add('alert'); await wait(1300); ff.classList.remove('alert');
-            const tx = spot.clientWidth * (.15 + Math.random() * .7) - ff.offsetWidth / 2;
-            dir = tx > x ? 1 : -1; place(); ff.classList.add('walking');
-            await new Promise(res => { let last = performance.now(); (function st(now) { const dt = Math.min(.05, (now - last) / 1000); last = now; if (inView) { const v = ff.offsetHeight * 1.2 * dt; x = Math.abs(tx - x) <= v ? tx : x + dir * v; place(); } x === tx ? res() : requestAnimationFrame(st); })(last); });
-            ff.classList.remove('walking');
-            for (let i = 0; i < 2; i++) { dir = -dir; place(); await wait(600); }
-            await wait(800);
-          }
+        stage.classList.add('is-up'); await wait(400);
+        while (true) {
+          ff.classList.add('alert'); await wait(1300); ff.classList.remove('alert');
+          const tx = spot.clientWidth * (.15 + Math.random() * .7) - ff.offsetWidth / 2;
+          dir = tx > x ? 1 : -1; place(); ff.classList.add('walking');
+          await new Promise(res => { let last = performance.now(); (function st(now) { const dt = Math.min(.05, (now - last) / 1000); last = now; if (inView) { const v = ff.offsetHeight * 1.2 * dt; x = Math.abs(tx - x) <= v ? tx : x + dir * v; place(); } x === tx ? res() : requestAnimationFrame(st); })(last); });
+          ff.classList.remove('walking');
+          for (let i = 0; i < 2; i++) { dir = -dir; place(); await wait(600); }
+          await wait(800);
         }
       })();
     }, { threshold: .6 }).observe(spot);
   });
+
+  // Button helpers: hovering "Přehled služeb" brings him up with a binder of
+  // documentation, hovering "Kontakt" brings him up offering a phone.
+  if (fine.matches && ffTpl?.content && !reduced.matches) {
+    [['.hero-copy .button', 'book'], ['header .nav > .button', 'phone']].forEach(([sel, prop]) => {
+      const btn = document.querySelector(sel); if (!btn) return;
+      const host = btn.parentElement; host.classList.add('ff-host');
+      const spot = document.createElement('div'); spot.className = 'ff-spot ff-pal ff-pal-' + prop; spot.setAttribute('aria-hidden', 'true');
+      const stage = document.createElement('div'); stage.className = 'ff-stage ff-mini ff-holding ff-with-' + prop;
+      stage.appendChild(ffTpl.content.cloneNode(true)); stage.querySelector('.ff-flame')?.remove();
+      spot.appendChild(stage); host.appendChild(spot);
+      const ff = stage.querySelector('.ff'), face = stage.querySelector('.ff-face');
+      const place = () => {
+        if (prop === 'phone') {        // slides out from behind the left side of the button
+          spot.style.left = (btn.offsetLeft - spot.offsetWidth) + 'px';
+          spot.style.top = (btn.offsetTop + btn.offsetHeight - spot.offsetHeight) + 'px';
+        } else {                       // rises from behind the top edge of the button
+          spot.style.left = (btn.offsetLeft + btn.offsetWidth - spot.offsetWidth - 14) + 'px';
+          spot.style.top = (btn.offsetTop - spot.offsetHeight) + 'px';
+        }
+        ff.style.transform = `translateX(${((spot.clientWidth - ff.offsetWidth) / 2).toFixed(1)}px)`;
+        face.style.transform = 'scaleX(-1)';
+      };
+      let t;
+      const up = () => { clearTimeout(t); place(); stage.classList.add('is-peeking'); t = setTimeout(() => stage.classList.add('is-up', 'is-offering'), 140); };
+      const down = () => { clearTimeout(t); stage.classList.remove('is-offering', 'is-up'); t = setTimeout(() => stage.classList.remove('is-peeking'), 120); };
+      btn.addEventListener('pointerenter', up); btn.addEventListener('focus', up);
+      btn.addEventListener('pointerleave', down); btn.addEventListener('blur', down);
+    });
+  }
 
   // The film scene is a magnet: once part of it is on screen and scrolling
   // pauses, the page glides so the film fills the screen. A new gesture

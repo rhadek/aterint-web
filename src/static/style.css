@@ -749,3 +749,39 @@ html.film-snap{scroll-snap-type:y proximity;scroll-padding-top:0}
 .cinema-bokeh i:nth-child(16){left:50%;--s:14px;--c:#ffe2b8;--d:27s;--dl:-20s;--dx:10px}
 .cinema-paused .cinema-aurora i,.cinema-paused .cinema-bokeh i,.decorations-paused .cinema-aurora i,.decorations-paused .cinema-bokeh i{animation-play-state:paused}
 @media(prefers-reduced-motion:reduce){.cinema-aurora i{animation:none}.cinema-bokeh{display:none}}
+/* v24 – props and poses */
+.ff-book,.ff-phone{display:none}
+.ff-with-book .ff-ext,.ff-with-book .ff-arm-front,.ff-with-phone .ff-ext,.ff-with-phone .ff-arm-front{display:none}
+.ff-with-book .ff-book,.ff-with-phone .ff-phone{display:inline;transform-box:view-box;transform-origin:22px 28px;opacity:0;transform:translateY(8px) rotate(14deg);transition:opacity .25s ease,transform .45s cubic-bezier(.3,1.7,.5,1)}
+.is-offering.ff-with-book .ff-book{opacity:1;transform:none;transition-delay:.25s}
+.is-offering.ff-with-phone .ff-phone{opacity:1;transform:translateX(2px) scale(1.06);transition-delay:.25s}
+.ff-ring{opacity:0}
+.is-offering .ff-ring{animation:ff-ring .5s ease-in-out .7s infinite alternate}
+@keyframes ff-ring{from{opacity:0}to{opacity:1}}
+.ff-host{position:relative}
+.ff-pal{z-index:0;--ff:52px}
+.ff-pal .ff-lift{transition:transform .35s cubic-bezier(.3,1.5,.5,1)}
+.ff-pal .ff{pointer-events:none}
+header .nav{position:relative}
+/* relaxed, leaning against the A */
+.ff-relaxed .ff-ext{display:none}
+.ff-arm-front{transform-box:fill-box;transform-origin:0 0}
+.ff-relaxed .ff-arm-front{transform:rotate(62deg)}
+.ff-relaxed .ff.waving .ff-arm-front{animation:ff-wave-front .34s ease-in-out infinite alternate}
+@keyframes ff-wave-front{from{transform:rotate(-125deg)}to{transform:rotate(-80deg)}}
+.ff-relaxed .ff.waving .ff-arm-wave{display:none}
+.ff-relaxed .ff-face{transform-origin:50% 100%}
+.ff-spot-lean{overflow:visible}
+.ff-spot-lean .ff-stage .ff{transform-origin:50% 100%}
+.ff-spot-lean .ff-lift{rotate:11deg;transform-origin:50% 100%;transition:none}
+.ff-relaxed .ff-leg-a{transform:rotate(16deg) translateX(-1px)}
+.ff-relaxed .ff-leg-b{transform:rotate(-8deg)}
+.ff-baseline{display:inline-block;width:0;height:0;vertical-align:baseline}
+/* flame flickering back */
+.ff-flame.is-flicker{transform:translateX(-50%) scale(.45)}
+.ff-flame.is-flicker.is-out{transform:translateX(-50%) scale(.45)}
+.footer-signature .ff-spot-lean{transform:none;right:auto}
+.ff-pal-phone{height:calc(var(--ff) * 1.12);width:calc(var(--ff) * 1.25)}
+.ff-pal-phone .ff-lift{transform:translateX(110%)}
+.ff-pal-phone .is-peeking .ff-lift,.ff-pal-phone .is-up .ff-lift{transform:translateX(0)}
+.ff-pal-phone .ff-bubble{display:none}
