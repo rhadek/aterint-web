@@ -921,6 +921,10 @@
     (async () => {
       await pause(document.querySelector('.intro-screen') ? 1700 : 500);
       if (gone) return;
+      // stand on top of the red band so its pause button stays free
+      const bandEl = document.querySelector('.activity-band');
+      const br = bandEl?.getBoundingClientRect();
+      hello.style.bottom = (br && br.bottom > window.innerHeight - 4 && br.top < window.innerHeight ? Math.round(window.innerHeight - br.top) : 0) + 'px';
       hello.hidden = false; void hello.offsetWidth;
       hello.classList.add('is-in'); await pause(280);
       hello.classList.add('is-waving'); await pause(720);
@@ -949,9 +953,11 @@
     const wave = ms => { if (reduced.matches) return; clearTimeout(tm); leanGuy.classList.add('is-waving'); tm = setTimeout(() => leanGuy.classList.remove('is-waving'), ms); };
     leanGuy.addEventListener('click', () => wave(1800));
     if (typeof IntersectionObserver === 'function') new IntersectionObserver(([en]) => {
+      if (en.isIntersecting) align();
       if (en.isIntersecting && !shown) setTimeout(() => wave(2400), 350);
       shown = en.isIntersecting;
-    }, { threshold: .6 }).observe(leanGuy);
+    }, { threshold: [0, .6] }).observe(leanGuy);
+    if (typeof ResizeObserver === 'function') new ResizeObserver(align).observe(sig);
   }
 
   // Film backdrop: the dark section opens out of the light page as it arrives
