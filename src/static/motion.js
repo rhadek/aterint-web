@@ -10,16 +10,16 @@
         if (!entry.isIntersecting) continue;
         revealObserver.unobserve(entry.target);
         if (typeof entry.target.animate !== 'function') continue;
-        // Arriving from below the element (scrolling up): show it as it is, no rise-up.
-        if (entry.boundingClientRect && entry.boundingClientRect.top < 0) { entry.target.style?.setProperty?.('--contact-line', '1'); continue; }
+        // Arriving from below the element (scrolling up): same entrance, mirrored – it settles downwards.
+        const dir = entry.boundingClientRect && entry.boundingClientRect.top < 0 ? -1 : 1;
         if (entry.target.hasAttribute?.('data-contact-reveal')) {
           entry.target.style.setProperty('--contact-line', '1');
-          entry.target.animate([{ transform: 'translateY(18px)' }, { transform: 'translateY(0)' }],
+          entry.target.animate([{ transform: `translateY(${18 * dir}px)` }, { transform: 'translateY(0)' }],
             { duration: 900, easing: 'cubic-bezier(.16,1,.3,1)' });
           continue;
         }
         entry.target.animate([
-          { opacity: 0, transform: 'translateY(24px)' },
+          { opacity: 0, transform: `translateY(${24 * dir}px)` },
           { opacity: 1, transform: 'translateY(0)' }
         ], { duration: 800, delay: Math.min(Number(entry.target.dataset.sequence || 0) * 90, 270), easing: 'cubic-bezier(.18,1,.25,1)' });
       }
@@ -115,9 +115,9 @@
       for (const entry of entries) {
         if (!entry.isIntersecting) continue;
         textObserver.unobserve(entry.target);
-        if (entry.boundingClientRect && entry.boundingClientRect.top < 0) continue;
+        const dir = entry.boundingClientRect && entry.boundingClientRect.top < 0 ? -1 : 1;
         entry.target.querySelectorAll('.text-word').forEach((word, index) => {
-          word.animate([{ transform: 'translateY(108%) rotate(3deg)' }, { transform: 'translateY(0) rotate(0)' }],
+          word.animate([{ transform: `translateY(${108 * dir}%) rotate(${3 * dir}deg)` }, { transform: 'translateY(0) rotate(0)' }],
             { duration: 850, delay: index * 55, fill: 'backwards', easing: 'cubic-bezier(.16,1,.3,1)' });
         });
       }
@@ -635,8 +635,7 @@
         const e = 1 - Math.pow(1 - open, 3);
         const through = clamp((vh - r.top) / (vh + r.height));
         if (e > .35 && !band.classList.contains('is-open')) {
-          if (r.top < 0) { band.classList.add('fx-instant', 'is-open'); requestAnimationFrame(() => requestAnimationFrame(() => band.classList.remove('fx-instant'))); }
-          else band.classList.add('is-open');
+          band.classList.add('is-open');   // curtains part sideways: the same in both scroll directions
         }
         const img = band.querySelector('img'), title = band.querySelector('.svc-band-title');
         // set on the band so the photo and its blurred backdrop share the exact same drift and zoom
@@ -682,11 +681,16 @@
       }
     });
     root.classList.add('fx-chapters');
-    // Coming back up from below: switch the element on instantly instead of replaying a downward entrance.
-    const showNow = (el, cls) => { el.classList.add('fx-instant', cls); requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove('fx-instant'))); };
+    // Coming back up from below: play the same entrance, mirrored, so things settle downwards into place
+    // (the direction you are travelling) instead of popping in or rising against the scroll.
+    const enter = (el, cls, fromTop) => {
+      if (!fromTop) { el.classList.add(cls); return; }
+      el.classList.add('fx-from-top');
+      requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add(cls)));
+    };
     const lit = new IntersectionObserver(entries => entries.forEach(en => {
       if (!en.isIntersecting) return;
-      if (en.boundingClientRect.top < 0) { showNow(en.target, 'is-lit'); en.target.classList.add('is-open'); } else en.target.classList.add('is-lit');
+      enter(en.target, 'is-lit', en.boundingClientRect.top < 0);
       lit.unobserve(en.target);
     }), { threshold: .45 });
     bands.forEach(b => lit.observe(b));
@@ -696,7 +700,7 @@
     });
     const built = new IntersectionObserver(entries => entries.forEach(en => {
       if (!en.isIntersecting) return;
-      if (en.boundingClientRect.top < 0) showNow(en.target, 'is-in'); else en.target.classList.add('is-in');
+      enter(en.target, 'is-in', en.boundingClientRect.top < 0);
       built.unobserve(en.target);
     }), { threshold: .2 });
     document.querySelectorAll('.svc-item').forEach(i => built.observe(i));

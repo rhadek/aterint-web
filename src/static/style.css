@@ -767,3 +767,11 @@ body .eyebrow{color:#b3261e}
 .svc-band.is-open .band-curtain-r{transform:translateX(calc(100% + 2px))}
 .svc-band.is-open .band-curtain:before,.svc-band.is-open .band-curtain:after{transform:scale(0)}
 @media(prefers-reduced-motion:reduce){.fx-ready .band-curtain{display:none}}
+
+/* v38: návrat zespodu – stejný vstup jako při skrolování dolů, jen zrcadlově (shora dolů) */
+.fx-chapters .svc-band.fx-from-top .fx-char{transform:translateY(-.45em) rotate(-6deg) scale(.9)}
+.fx-chapters .svc-band.fx-from-top.is-lit .fx-char{transform:none}
+.fx-chapters .svc-band.fx-from-top .ai-label{transform:translateY(-8px)}
+.fx-chapters .svc-band.fx-from-top.is-lit .ai-label{transform:none}
+.fx-chapters .svc-item.fx-from-top>*{transform:translateY(-22px)}
+.fx-chapters .svc-item.fx-from-top.is-in>*{transform:none}
