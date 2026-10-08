@@ -413,11 +413,11 @@
     film.addEventListener('play', () => { filmUserPaused = false; });
     new IntersectionObserver(entries => {
       for (const entry of entries) {
-        filmVisible = entry.isIntersecting && entry.intersectionRatio >= .35;
+        filmVisible = entry.isIntersecting && entry.intersectionRatio >= .8;
         filmScene?.classList.toggle('cinema-in-view', filmVisible);
         if (filmVisible) playFilm(); else pauseFilm();
       }
-    }, { threshold: [0, .35] }).observe(film);
+    }, { threshold: [0, .5, .8, .95] }).observe(film);
   }
   window.addEventListener('scroll', () => {
     const y = window.scrollY;
@@ -487,10 +487,15 @@
     canvas.className = 'ember-field'; canvas.setAttribute('aria-hidden', 'true');
     hero.insertBefore(canvas, hero.firstChild);
     const ctx = canvas.getContext('2d');
+    // one pre-rendered glowing ember, stamped many times (much cheaper than per-particle gradients)
+    const sprite = document.createElement('canvas'); sprite.width = sprite.height = 64;
+    { const g = sprite.getContext('2d'), gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+      gr.addColorStop(0, 'rgba(255,236,200,1)'); gr.addColorStop(.12, 'rgba(255,170,110,.95)'); gr.addColorStop(.3, 'rgba(255,104,89,.45)'); gr.addColorStop(1, 'rgba(255,80,40,0)');
+      g.fillStyle = gr; g.fillRect(0, 0, 64, 64); }
     let w = 0, h = 0, dpr = 1, visible = true, running = false, last = 0;
     let mx = -9999, my = -9999;
     const embers = [];
-    const count = () => Math.round(clamp(w / opt.density, 14, 90));
+    const count = () => Math.round(clamp(w / (opt.density * 1.35), 12, 60));
     function spawn(e, initial) {
       // Most embers rise around the extinguisher, a few drift over the copy.
       const nearArt = opt.focus && Math.random() < (w < 680 ? .5 : .72);
@@ -505,7 +510,7 @@
     }
     function size() {
       const rect = hero.getBoundingClientRect();
-      dpr = Math.min(2, window.devicePixelRatio || 1);
+      dpr = Math.min(1.5, window.devicePixelRatio || 1);
       w = rect.width; h = rect.height;
       canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -532,12 +537,9 @@
         const flicker = .75 + Math.sin(t / 90 + e.phase * 10) * .25;
         const a = fade * flicker;
         if (a <= .01) continue;
-        const g = ctx.createRadialGradient(x, e.y, 0, x, e.y, e.r * 7);
-        g.addColorStop(0, `hsla(${e.hue},100%,62%,${a * .7})`);
-        g.addColorStop(1, `hsla(${e.hue},100%,50%,0)`);
-        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, e.y, e.r * 7, 0, 6.283); ctx.fill();
-        ctx.fillStyle = `hsla(${e.hue + 18},100%,${78 + (1 - k) * 12}%,${a})`;
-        ctx.beginPath(); ctx.arc(x, e.y, e.r, 0, 6.283); ctx.fill();
+        const R = e.r * 7;
+        ctx.globalAlpha = Math.min(1, a);
+        ctx.drawImage(sprite, x - R, e.y - R, R * 2, R * 2);
       }
       requestAnimationFrame(frame);
     }
@@ -576,7 +578,7 @@
   const cinema = document.querySelector('.cinema-section');
   const cinemaBox = document.querySelector('.cinema-container');
   const track = document.querySelector('.activity-track');
-  let lastY = window.scrollY, speed = 0, ticking = false, cine = 0;
+  let lastY = window.scrollY, speed = 0, ticking = false, cine = 0, bandAnim = null;
   function cineTarget() {
     if (!cinema || reduced.matches) return 1;
     const r = cinema.getBoundingClientRect(), vh = window.innerHeight;
@@ -601,7 +603,7 @@
     }
     if (track && motion) {
       speed += (Math.abs(y - lastY) - speed) * .2;
-      const anim = track.getAnimations?.()[0];
+      const anim = bandAnim || (bandAnim = track.getAnimations?.()[0]);
       if (anim) anim.playbackRate = 1 + Math.min(speed, 120) / 12;
       if (speed > .3) again = true;
     }
@@ -627,13 +629,10 @@
         const open = motion ? clamp((vh - r.top) / (vh * .75)) : 1;
         const e = 1 - Math.pow(1 - open, 3);
         const through = clamp((vh - r.top) / (vh + r.height));
-        const inset = (1 - e) * Math.min(vw * .07, 110);
-        band.style.setProperty('--band-inset', inset.toFixed(1) + 'px');
-        band.style.setProperty('--band-radius', ((1 - e) * 28).toFixed(1) + 'px');
+        if (e > .35) band.classList.add('is-open');
         const img = band.querySelector('img'), title = band.querySelector('.svc-band-title');
         img?.style.setProperty('--band-shift', motion ? ((through - .5) * -14).toFixed(2) + '%' : '0px');
         img?.style.setProperty('--band-zoom', motion ? (1.12 - e * .1).toFixed(4) : '1');
-        title?.style.setProperty('--title-lift', motion ? ((1 - e) * 60).toFixed(1) + 'px' : '0px');
       });
     }
     const ask = () => { if (!queued) { queued = true; requestAnimationFrame(paint); } };
@@ -755,7 +754,7 @@
     cineBox.insertBefore(stage, cineBox.firstChild);
     const ff = stage.querySelector('.ff'), face = stage.querySelector('.ff-face'), flame = stage.querySelector('.ff-flame');
     let visible = false, x = 0, dir = -1, alive = true;
-    new IntersectionObserver(([en]) => { visible = en.isIntersecting && en.intersectionRatio > .4; }, { threshold: [0, .4, .7] }).observe(cinema);
+    new IntersectionObserver(([en]) => { visible = en.isIntersecting && en.intersectionRatio > .78; }, { threshold: [0, .5, .78, .95] }).observe(cinema);
     const paused = () => !visible || document.hidden || reduced.matches || cinema.classList.contains('cinema-paused') || document.body.classList.contains('decorations-paused');
     const sleep = ms => new Promise(res => { let left = ms, last = performance.now(); (function t(now) { if (!paused()) left -= now - last; last = now; left > 0 ? requestAnimationFrame(t) : res(); })(last); });
     const W = () => stage.clientWidth, size = () => ff.offsetHeight || 48;

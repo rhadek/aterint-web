@@ -870,3 +870,19 @@ header .nav{position:relative}
  .ai-label{font-size:8px;top:10px}
  .footer-bottom p{font-size:10px}
 }
+/* v31 – performance + narrower film */
+.ai-label{backdrop-filter:none;-webkit-backdrop-filter:none;background:#151817a6}
+.svc-band{--band-inset:min(7vw,110px);--band-radius:28px;transition:clip-path 1.1s cubic-bezier(.7,0,.2,1)}
+.svc-band.is-open{--band-inset:0px;--band-radius:0px}
+@supports not (transition-behavior:normal){.svc-band{transition:clip-path 1.1s cubic-bezier(.7,0,.2,1)}}
+.svc-band-title{transition:transform 1.1s cubic-bezier(.16,1,.3,1);transform:translateY(60px)}
+.svc-band.is-open .svc-band-title{transform:none}
+.svc-band-media img{will-change:transform}
+@media(prefers-reduced-motion:reduce){.svc-band{--band-inset:0px;--band-radius:0px;transition:none}.svc-band-title{transform:none;transition:none}}
+.home-page .hero-home{border-radius:0!important}
+.cinema-aurora i:nth-child(n+4){display:none}
+.cinema-aurora i{width:36vmax;height:36vmax}
+.cinema-bokeh i:nth-child(n+11){display:none}
+.cinema-container{width:min(100%,1180px,124svh);width:min(100%,1180px,124dvh)}
+@media(min-width:1600px){.cinema-container{width:min(100%,1320px,124dvh)}}
+.home-page .hero-home{will-change:transform}

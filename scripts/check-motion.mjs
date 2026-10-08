@@ -115,15 +115,15 @@ f.scroll(12200);assert.equal(els['.footer-signature'].props['--signature-cut'],'
 // Muted playback is deferred, resumable after automatic pauses, and stoppable by the user.
 const filmObserver=f.observers.find(o=>o.targets.includes(film)),tick=()=>new Promise(resolve=>setImmediate(resolve));
 assert.equal(f.playCalls,0);assert.equal(film.muted,true);
-filmObserver.fn([{isIntersecting:true,intersectionRatio:.7}]);await tick();assert.equal(f.playCalls,1);assert.equal(film.paused,false);
+filmObserver.fn([{isIntersecting:true,intersectionRatio:.9}]);await tick();assert.equal(f.playCalls,1);assert.equal(film.paused,false);
 filmObserver.fn([{isIntersecting:false,intersectionRatio:0}]);assert.ok(film.paused);
-filmObserver.fn([{isIntersecting:true,intersectionRatio:.7}]);await tick();assert.equal(f.playCalls,2);
+filmObserver.fn([{isIntersecting:true,intersectionRatio:.9}]);await tick();assert.equal(f.playCalls,2);
 doc.hidden=true;doc.events.visibilitychange();assert.ok(film.paused);doc.hidden=false;doc.events.visibilitychange();await tick();assert.equal(f.playCalls,3);
-film.pause();filmObserver.fn([{isIntersecting:false,intersectionRatio:0}]);filmObserver.fn([{isIntersecting:true,intersectionRatio:.7}]);await tick();assert.equal(f.playCalls,3);
+film.pause();filmObserver.fn([{isIntersecting:false,intersectionRatio:0}]);filmObserver.fn([{isIntersecting:true,intersectionRatio:.9}]);await tick();assert.equal(f.playCalls,3);
 film.play();await tick();assert.equal(f.playCalls,4);pref.matches=true;pref.events.change();f.flush();assert.ok(film.paused);
 assert.equal(guide.classList.contains('guide-slider'),false);assert.equal(els['.information-grid'].props['--guide-offset'],'0px');assert.equal(els['.hero-object'].props['--tilt-y'],'0deg');assert.equal(els['.band-toggle'].hidden,true);assert.equal(doc.documentElement.classList.contains('guide-snap'),false);assert.equal(doc.documentElement.classList.contains('film-snap'),false);
 prevented=false;folds[3].summary.events.click({preventDefault(){prevented=true}});assert.equal(prevented,false,'reduced motion leaves native details');
-filmObserver.fn([{isIntersecting:true,intersectionRatio:.7}]);await tick();assert.equal(f.playCalls,4);
+filmObserver.fn([{isIntersecting:true,intersectionRatio:.9}]);await tick();assert.equal(f.playCalls,4);
 const reduced=fixture({reduce:true});reduced.scroll(1150);reduced.idle();assert.equal(reduced.folds[0].open,false,'reduced motion preserves manual details');assert.equal(reduced.scrolled,undefined);
 pref.matches=false;pref.events.change();f.flush();await tick();assert.ok(guide.classList.contains('guide-slider'));
 els['.band-toggle'].events.click();assert.equal(els['.band-toggle']['aria-pressed'],'true');assert.ok(els['.activity-band'].classList.contains('is-paused'));
