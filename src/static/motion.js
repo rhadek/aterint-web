@@ -734,7 +734,12 @@
   const toTop = document.querySelector('.to-top');
   if (toTop) {
     const foot = document.querySelector('.technical-footer');
-    const show = () => toTop.classList.toggle('is-shown', window.scrollY > window.innerHeight * .9 && !(foot && foot.getBoundingClientRect().top < window.innerHeight * .85));
+    const film = document.querySelector('.cinema-section');
+    const show = () => {
+      const vh = window.innerHeight, fr = film?.getBoundingClientRect();
+      const onFilm = fr && fr.top < vh * .5 && fr.bottom > vh * .5;
+      toTop.classList.toggle('is-shown', window.scrollY > vh * .9 && !onFilm && !(foot && foot.getBoundingClientRect().top < vh * .85));
+    };
     window.addEventListener('scroll', show, { passive: true }); show();
   }
 

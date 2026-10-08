@@ -640,3 +640,9 @@ html.film-snap{scroll-snap-type:y proximity;scroll-padding-top:0}
 .to-top:focus-visible{outline:2px solid #d83229;outline-offset:3px}
 .fx-ready .to-top:not(.is-shown){opacity:0;transform:translateY(16px) scale(.9);pointer-events:none}
 @media(prefers-reduced-motion:reduce){.to-top{transition:none}}
+/* v20 – white closing strip of the services section, a calm step before the dark film */
+.home-page .service-directory{padding-bottom:0}
+.home-page .service-directory-bottom{margin:clamp(50px,8svh,90px) calc(50% - 50vw) 0;padding:clamp(22px,3.4svh,34px) max(var(--gutter),calc(50vw - var(--max)/2 + var(--gutter)));border-top:0;background:#fff;box-shadow:0 -1px 0 #e4ded3}
+.home-page .service-directory-bottom>span{font:10px/1.6 monospace;letter-spacing:1px;color:#6e675d}
+.home-page .service-directory-bottom .quiet-link{color:#151817}
+.cinema-ai{display:inline-block;margin-left:10px;padding:3px 8px;border:1px solid #ffffff2e;border-radius:999px;color:#e8e2d8;letter-spacing:.6px}
