@@ -17,7 +17,7 @@ if OUT.exists(): shutil.rmtree(OUT)
 OUT.mkdir()
 shutil.copytree(ROOT / 'src/static/assets', OUT / 'assets')
 # Only ship the compressed local font, not its source TTF or failed conversions.
-for name in ['manrope.ttf', 'manrope.woff2']:
+for name in ['manrope.ttf']:
     (OUT / 'assets' / name).unlink(missing_ok=True)
 shutil.copy(ROOT / 'FONT-LICENSE.txt', OUT / 'assets/manrope-license.txt')
 from PIL import Image as _Img
@@ -88,7 +88,7 @@ def write_page(path, title, description, content, faqs=None, service=None, index
     page_security[path]=csp
     robots='index,follow,max-image-preview:large' if options.production and index else 'noindex,nofollow'
     canonical=f'<link rel="canonical" href="{url(path)}">' if index else ''
-    result=f'''<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{E(title)}</title><meta name="description" content="{E(description,quote=True)}"><meta name="robots" content="{robots}">{canonical}<meta name="theme-color" content="#181b1c"><meta name="geo.region" content="CZ-63"><meta name="geo.placename" content="Třebíč"><meta name="author" content="ATERINT s.r.o."><meta property="og:type" content="website"><meta property="og:locale" content="cs_CZ"><meta property="og:site_name" content="ATERINT"><meta property="og:title" content="{E(title,quote=True)}"><meta property="og:description" content="{E(description,quote=True)}"><meta property="og:url" content="{url(path)}"><meta property="og:image" content="{url('/assets/og-cover.png')}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><link rel="icon" href="/assets/flame.svg" type="image/svg+xml"><link rel="preload" href="/assets/manrope.woff" as="font" type="font/woff" crossorigin><link rel="stylesheet" href="{CSS}"><script type="application/ld+json">{data}</script></head><body class="{'home-page' if path == '/' else 'inner-page'}">{nav()}<main id="obsah">{content}</main>{footer()}</body></html>'''
+    result=f'''<!doctype html><html lang="cs"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>{E(title)}</title><meta name="description" content="{E(description,quote=True)}"><meta name="robots" content="{robots}">{canonical}<meta name="theme-color" content="#181b1c"><meta name="geo.region" content="CZ-63"><meta name="geo.placename" content="Třebíč"><meta name="author" content="ATERINT s.r.o."><meta property="og:type" content="website"><meta property="og:locale" content="cs_CZ"><meta property="og:site_name" content="ATERINT"><meta property="og:title" content="{E(title,quote=True)}"><meta property="og:description" content="{E(description,quote=True)}"><meta property="og:url" content="{url(path)}"><meta property="og:image" content="{url('/assets/og-cover.png')}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><link rel="icon" href="/assets/flame.svg" type="image/svg+xml"><link rel="preload" href="/assets/manrope.woff2" as="font" type="font/woff2" crossorigin><link rel="stylesheet" href="{CSS}"><script type="application/ld+json">{data}</script></head><body class="{'home-page' if path == '/' else 'inner-page'}">{nav()}<main id="obsah">{content}</main>{footer()}</body></html>'''
     result=result.replace('</head>',f'<script src="{MOTION}" defer></script></head>')
     if path == '/':
         result=result.replace('href="/#','href="#')
@@ -175,7 +175,7 @@ apache += f'<IfModule mod_headers.c>\nHeader always set Content-Security-Policy 
 (OUT/'.htaccess').write_text(apache)
 
 payload={}
-types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.svg':'image/svg+xml','.woff':'font/woff','.png':'image/png','.webp':'image/webp','.mp4':'video/mp4','.txt':'text/plain; charset=utf-8','.xml':'application/xml; charset=utf-8'}
+types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.svg':'image/svg+xml','.woff2':'font/woff2','.woff':'font/woff','.png':'image/png','.webp':'image/webp','.mp4':'video/mp4','.txt':'text/plain; charset=utf-8','.xml':'application/xml; charset=utf-8'}
 for f in sorted(OUT.rglob('*')):
     if not f.is_file() or f.name in ['.htaccess','_headers']:continue
     relative=f.relative_to(OUT).as_posix();route='/'+relative

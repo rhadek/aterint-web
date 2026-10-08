@@ -42,7 +42,7 @@ const robot=await (await req('/robots.txt')).text();assert.ok(robot.includes(inf
 const sitemap=await (await req('/sitemap.xml')).text();for(const path of info.pages)assert.ok(sitemap.includes('<loc>'+info.origin+path+'</loc>'));
 const assets=['flame','extinguisher','doc','people','shield','ext','wall','sign'];
 for(const name of assets){const res=await req('/assets/'+name+'.svg');const s=await res.text();assert.equal(res.headers.get('Content-Type'),'image/svg+xml');assert.match(s,/<svg[ >]/);assert.match(s,/width="\d+/);assert.match(s,/height="\d+/);assert.ok(s.length>200);assert.ok(!s.includes('<script'));}
-const font=await req('/assets/manrope.woff');assert.ok((await font.arrayBuffer()).byteLength>50000);assert.equal(font.headers.get('Content-Type'),'font/woff');
+const font=await req('/assets/manrope.woff2');assert.ok((await font.arrayBuffer()).byteLength>20000);assert.equal(font.headers.get('Content-Type'),'font/woff2');
 const og=await req('/assets/og-cover.png');assert.equal(og.headers.get('Content-Type'),'image/png');assert.ok((await og.arrayBuffer()).byteLength>10000);
 // Video seeking must return the actual requested bytes, including unaligned base64 boundaries.
 const filmPath='/assets/media/aterint-film-v1.mp4';
