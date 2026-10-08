@@ -857,3 +857,16 @@ header .nav{position:relative}
 .fx-ready .cinema-container{backface-visibility:hidden}
 .ff-stage .ff{will-change:transform}
 @media(prefers-reduced-motion:reduce){.cin-curtain{display:none}}
+/* v30 – Safari: the full-bleed bands must not widen their grid track */
+.svc-chapters{grid-template-columns:minmax(0,1fr)}
+.svc-chapter,.svc-pair,.svc-item{min-width:0}
+/* v30 – quieter AI notes */
+.ai-note{display:block;margin-top:6px;font:400 10px/1.4 Manrope,Arial,sans-serif;letter-spacing:0;color:#8f877b;text-transform:none}
+.ai-label{font-size:9px;padding:4px 9px;background:#15181766;color:#ffffffd9}
+@media(max-width:680px){
+ .home-page .service-directory-bottom{flex-direction:column;align-items:flex-start;gap:6px}
+ .home-page .service-directory-bottom>span{font-size:9px}
+ .ai-note{font-size:9px}
+ .ai-label{font-size:8px;top:10px}
+ .footer-bottom p{font-size:10px}
+}
