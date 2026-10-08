@@ -781,3 +781,36 @@ a,button,summary,label{touch-action:manipulation}
 /* v41: viditelné zaměření videa z klávesnice */
 .cinema-frame:has(video:focus-visible){outline:3px solid var(--red-light);outline-offset:5px}
 video:focus-visible{outline:3px solid var(--red-light);outline-offset:-3px}
+
+/* v43: kontrolní štítek – vyražte měsíc a rok poslední kontroly */
+.tag-tool{background:#f8f8f3;border-top:1px solid var(--line)}
+.tag-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,400px);gap:clamp(32px,6vw,96px);align-items:center}
+.tag-copy h2{font-size:clamp(30px,3.4vw,46px);line-height:1.04;letter-spacing:-.035em;margin:0 0 20px;text-wrap:balance}
+.tag-copy p{max-width:52ch;color:var(--body);font-size:16px}
+.tag-copy .tag-law{font-size:13px;color:#6b726c;border-left:1px solid var(--red);padding-left:12px;margin-top:20px}
+.tag-card{position:relative;background:#fffdf7;border-radius:14px;padding:44px 26px 26px;box-shadow:0 1px 0 #0000000d,0 18px 40px -18px #1518173d,0 4px 10px -4px #1518171f;transform:rotate(-1.4deg);transition:transform .5s cubic-bezier(.23,1,.32,1)}
+.tag-card:hover{transform:rotate(0)}
+.tag-card:before{content:'';position:absolute;top:14px;left:50%;width:14px;height:14px;margin-left:-7px;border-radius:50%;background:#f8f8f3;box-shadow:inset 0 1px 2px #15181740}
+.tag-head{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--red);padding-bottom:10px;margin-bottom:18px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--red);font-weight:700}
+.tag-head span:first-child{font-size:15px;letter-spacing:.02em;color:var(--ink)}
+.tag-field{border:0;margin:0 0 16px;padding:0;min-width:0}
+.tag-field legend{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:10px;padding:0}
+.tag-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.tag-years{grid-template-columns:repeat(4,1fr)}
+.tag-hole{position:relative;min-height:44px;border:1px dashed #c9ccc4;border-radius:999px;background:transparent;color:var(--ink);font:600 14px/1 Manrope,Arial,sans-serif;font-variant-numeric:tabular-nums;cursor:pointer;transition:border-color .2s,color .2s,transform .15s cubic-bezier(.23,1,.32,1)}
+.tag-hole:hover{border-color:var(--red);color:var(--red)}
+.tag-hole:active{transform:scale(.94)}
+.tag-hole:before{content:'';position:absolute;inset:3px;border-radius:inherit;background:#f8f8f3;box-shadow:inset 0 2px 4px #1518174d,inset 0 -1px 0 #ffffffb3;transform:scale(0);transition:transform .32s cubic-bezier(.23,1,.32,1)}
+.tag-hole[aria-pressed="true"]{border-style:solid;border-color:#151817;color:transparent}
+.tag-hole[aria-pressed="true"]:before{transform:scale(1)}
+.tag-chip{position:absolute;width:14px;height:14px;border-radius:50%;background:#fffdf7;box-shadow:0 1px 2px #1518174d;pointer-events:none;z-index:2}
+.tag-result{border-top:1px dashed #c9ccc4;padding-top:14px;min-height:76px}
+.tag-next{margin:0;font-size:17px;font-weight:700;letter-spacing:-.01em;color:var(--ink)}
+.tag-state{margin:6px 0 0;font-size:14px;color:var(--body)}
+.tag-card.is-ok .tag-state{color:#2f6b3a}
+.tag-card.is-soon .tag-state{color:#9a5a00}
+.tag-card.is-late .tag-state{color:#b3261e;font-weight:600}
+.tag-call{margin-top:14px;width:100%}
+.tag-call[hidden]{display:none}
+@media(max-width:900px){.tag-layout{grid-template-columns:minmax(0,1fr)}.tag-card{transform:none;max-width:440px}}
+@media(prefers-reduced-motion:reduce){.tag-card,.tag-hole,.tag-hole:before{transition:none}}

@@ -1095,3 +1095,57 @@
     document.addEventListener('click', e => { if (e.target.closest?.('a[href*="#"]')) { interrupt(); quietUntil = performance.now() + 1600; } });
   }
 })();
+
+// Inspection tag: punch the month and year of the last extinguisher check,
+// the tag tells you the latest date of the next one (at least once a year).
+(() => {
+  if (typeof document === 'undefined' || !document.querySelector) return;
+  const card = document.querySelector('[data-tag-tool]');
+  if (!card) return;
+  const months = ['leden', 'únor', 'březen', 'duben', 'květen', 'červen', 'červenec', 'srpen', 'září', 'říjen', 'listopad', 'prosinec'];
+  const monthsGen = ['ledna', 'února', 'března', 'dubna', 'května', 'června', 'července', 'srpna', 'září', 'října', 'listopadu', 'prosince'];
+  const now = new Date(), cy = now.getFullYear(), cm = now.getMonth();
+  const still = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+  const out = card.querySelector('.tag-next'), state = card.querySelector('.tag-state'), call = card.querySelector('.tag-call');
+  let month = -1, year = -1;
+  const plural = n => n === 1 ? 'měsíc' : n >= 2 && n <= 4 ? 'měsíce' : 'měsíců';
+  function chip(btn) {
+    if (still?.matches || typeof btn.animate !== 'function') return;
+    const c = document.createElement('i'); c.className = 'tag-chip'; c.setAttribute('aria-hidden', 'true');
+    const r = btn.getBoundingClientRect(), k = card.getBoundingClientRect();
+    c.style.left = (r.left - k.left + r.width / 2 - 7) + 'px'; c.style.top = (r.top - k.top + r.height / 2 - 7) + 'px';
+    card.appendChild(c);
+    const dx = (Math.random() - .5) * 60, rot = (Math.random() - .5) * 540;
+    c.animate([{ transform: 'translate(0,0) rotate(0) scale(1)', opacity: 1 },
+               { transform: `translate(${dx}px,${110 + Math.random() * 60}px) rotate(${rot}deg) scale(.8)`, opacity: 0 }],
+      { duration: 900, easing: 'cubic-bezier(.3,0,.8,.6)' }).onfinish = () => c.remove();
+  }
+  function update() {
+    card.classList.remove('is-ok', 'is-soon', 'is-late');
+    call.hidden = true;
+    if (month < 0 || year < 0) { out.textContent = month < 0 ? 'Vyrazte měsíc a rok.' : 'Ještě vyrazte rok.'; if (month < 0 && year >= 0) out.textContent = 'Ještě vyrazte měsíc.'; state.textContent = ''; return; }
+    if (year * 12 + month > cy * 12 + cm) { out.textContent = 'Toto datum je teprve v budoucnu.'; state.textContent = 'Zkontrolujte údaj na štítku přístroje.'; return; }
+    out.textContent = `Další kontrola nejpozději do konce ${monthsGen[month]} ${year + 1}.`;
+    const left = (year + 1) * 12 + month - (cy * 12 + cm);
+    if (left < 0) { card.classList.add('is-late'); state.textContent = 'Kontrola je po termínu. Ozvěte se, domluvíme ji co nejdřív.'; call.hidden = false; }
+    else if (left <= 1) { card.classList.add('is-soon'); state.textContent = left === 0 ? 'Termín je tento měsíc.' : 'Termín je příští měsíc.'; call.hidden = false; }
+    else { card.classList.add('is-ok'); state.textContent = `V pořádku, zbývá ${left} ${plural(left)}.`; }
+  }
+  function grid(sel, items, pick) {
+    const box = card.querySelector(sel), btns = [];
+    items.forEach(([label, name, value]) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'tag-hole'; b.textContent = label;
+      b.setAttribute('aria-label', name); b.setAttribute('aria-pressed', 'false');
+      b.addEventListener('click', () => {
+        const again = b.getAttribute('aria-pressed') === 'true';
+        btns.forEach(o => o.setAttribute('aria-pressed', 'false'));
+        if (!again) { b.setAttribute('aria-pressed', 'true'); chip(b); }
+        pick(again ? -1 : value); update();
+      });
+      btns.push(b); box.appendChild(b);
+    });
+  }
+  grid('.tag-months', months.map((m, i) => [String(i + 1), m, i]), v => { month = v; });
+  grid('.tag-years', [cy - 3, cy - 2, cy - 1, cy].map(y => [String(y).slice(2), String(y), y]), v => { year = v; });
+  card.hidden = false;
+})();
