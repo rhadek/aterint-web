@@ -821,18 +821,12 @@ header .nav{position:relative}
 .ff-lean.is-waving .ff-lean-forearm{animation:ff-lean-wave .3s ease-in-out infinite alternate}
 @keyframes ff-lean-wave{from{transform:rotate(-24deg)}to{transform:rotate(22deg)}}
 .ff-lean-eye{transform-box:fill-box;transform-origin:center;animation:ff-blink 4.2s infinite}
-/* v27 – homepage FAQ on a dark panel that opens out of the light page */
-.home-page .faq-section{position:relative;isolation:isolate;background:linear-gradient(#eeede6,#f2f2ed);padding-block:clamp(18px,3vh,34px);color:#eef0ea}
-.home-page .faq-section:before{content:'';position:absolute;z-index:-1;top:0;bottom:0;left:var(--faq-inset,0px);right:var(--faq-inset,0px);border-radius:var(--faq-r,0px);background:radial-gradient(ellipse at 85% 0%,#d8322933,transparent 55%),radial-gradient(ellipse at 10% 100%,#2fb38c1f,transparent 50%),linear-gradient(160deg,#1a1f22,#151817 60%,#1d1714);box-shadow:0 30px 70px -40px #0008}
-.home-page .faq-section:after{content:'';position:absolute;z-index:-1;top:0;bottom:0;left:var(--faq-inset,0px);right:var(--faq-inset,0px);border-radius:var(--faq-r,0px);background-image:linear-gradient(#ffffff08 1px,transparent 1px),linear-gradient(90deg,#ffffff08 1px,transparent 1px);background-size:72px 72px;mask-image:radial-gradient(ellipse at 30% 40%,#000,transparent 75%);pointer-events:none}
-.home-page .faq-section .section{padding-block:clamp(70px,11vh,130px)}
-.home-page .faq-section .eyebrow{color:#ff8a72}
-.home-page .faq-layout h2{color:#f4efe6;font-size:clamp(40px,4.4vw,72px);letter-spacing:-.045em;line-height:1}
-.home-page .faq-list details{border-bottom:1px solid #ffffff1c;padding:0}
-.home-page .faq-list details:first-child{border-top:1px solid #ffffff1c}
-.home-page .faq-list summary{padding:26px 54px 26px 0;font-size:clamp(16px,1.2vw,19px);color:#f4efe6;transition:color .3s}
-.home-page .faq-list summary:hover{color:#ffb7a5}
-.home-page .faq-list summary:after{content:'';top:50%;right:4px;width:30px;height:30px;margin-top:-15px;border-radius:50%;border:1px solid #ffffff2e;background:linear-gradient(#ff6859,#ff6859) center/12px 1.6px no-repeat,linear-gradient(#ff6859,#ff6859) center/1.6px 12px no-repeat;transition:transform .4s cubic-bezier(.3,1.5,.5,1),background-color .3s,border-color .3s}
-.home-page .faq-list details[open] summary:after{content:'';transform:rotate(45deg);background-color:#ff685922;border-color:#ff685966}
-.home-page .faq-list p{color:#b9c0b8;font-size:15px;line-height:1.75;margin:0;padding:0 54px 26px 0;max-width:62ch}
-@media(prefers-reduced-motion:reduce){.home-page .faq-section:before,.home-page .faq-section:after{left:0;right:0;border-radius:0}}
+/* v28 – homepage FAQ stays light; nicer toggle and sliding answers */
+.home-page .faq-list summary{padding:24px 54px 24px 0}
+.home-page .faq-list details{padding:0}
+.home-page .faq-list summary:after{content:'';top:50%;right:4px;width:30px;height:30px;margin-top:-15px;border-radius:50%;border:1px solid #d6cfc2;background:linear-gradient(#d83229,#d83229) center/12px 1.6px no-repeat,linear-gradient(#d83229,#d83229) center/1.6px 12px no-repeat;transition:transform .4s cubic-bezier(.3,1.5,.5,1),background-color .3s,border-color .3s}
+.home-page .faq-list details[open] summary:after{content:'';transform:rotate(45deg);background-color:#d8322914;border-color:#d8322955}
+.home-page .faq-list p{margin:0;padding:0 54px 24px 0}
+/* v28 – the film section's dark backdrop opens out of the page and closes again */
+.cinema-section{clip-path:inset(0 var(--cin-x,0px) round var(--cin-r,0px))}
+@media(prefers-reduced-motion:reduce){.cinema-section{clip-path:none}}

@@ -954,20 +954,22 @@
     }, { threshold: .6 }).observe(leanGuy);
   }
 
-  // FAQ: the dark panel opens out of the light page, like the service photos.
+  // Film backdrop: the dark section opens out of the light page as it arrives
+  // and folds back in as it leaves.
+  if (cinema) {
+    let qc = false;
+    const paintCine = () => {
+      qc = false;
+      const r = cinema.getBoundingClientRect(), vh = window.innerHeight, vw = window.innerWidth;
+      const e = reduced.matches ? 1 : 1 - Math.pow(1 - Math.min(clamp((vh - r.top) / (vh * .7)), clamp(r.bottom / (vh * .7))), 3);
+      cinema.style.setProperty('--cin-x', ((1 - e) * Math.min(vw * .06, 90)).toFixed(1) + 'px');
+      cinema.style.setProperty('--cin-r', ((1 - e) * 40).toFixed(1) + 'px');
+    };
+    const askCine = () => { if (!qc) { qc = true; requestAnimationFrame(paintCine); } };
+    window.addEventListener('scroll', askCine, { passive: true }); window.addEventListener('resize', askCine, { passive: true }); askCine();
+  }
   const faqPanel = document.querySelector('.home-page .faq-section');
   if (faqPanel) {
-    let q = false;
-    const paintFaq = () => {
-      q = false;
-      const r = faqPanel.getBoundingClientRect(), vh = window.innerHeight, vw = window.innerWidth;
-      const enter = clamp((vh - r.top) / (vh * .7)), leave = clamp(r.bottom / (vh * .7));
-      const e = reduced.matches ? 1 : 1 - Math.pow(1 - Math.min(enter, leave), 3);
-      faqPanel.style.setProperty('--faq-inset', ((1 - e) * Math.min(vw * .06, 90) + Math.min(vw * .012, 16)).toFixed(1) + 'px');
-      faqPanel.style.setProperty('--faq-r', (14 + (1 - e) * 26).toFixed(1) + 'px');
-    };
-    const askFaq = () => { if (!q) { q = true; requestAnimationFrame(paintFaq); } };
-    window.addEventListener('scroll', askFaq, { passive: true }); window.addEventListener('resize', askFaq, { passive: true }); askFaq();
     // answers slide open and closed instead of jumping
     faqPanel.querySelectorAll('.faq-list details').forEach(d => {
       const sum = d.querySelector('summary');
