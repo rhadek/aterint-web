@@ -460,8 +460,154 @@
   configure();
   if (hero && !reduced.matches) {
     hero.querySelectorAll('.headline-line').forEach((line, index) => {
-      line.animate([{ transform: 'translateY(44px)', opacity: 0 }, { transform: 'translateY(0)', opacity: 1 }],
-        { duration: 1100, delay: introDelay + 100 + index * 120, easing: 'cubic-bezier(.16,1,.3,1)' });
+      line.animate([{ transform: 'translateY(52px) skewY(4deg)', opacity: 0, filter: 'blur(12px)' }, { transform: 'translateY(0) skewY(0)', opacity: 1, filter: 'blur(0)' }],
+        { duration: 1300, delay: introDelay + 100 + index * 130, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'backwards' });
     });
   }
+})();
+
+// ---------------------------------------------------------------------------
+// v13: ember field, photo wipe hooks, link roll, magnetic buttons, cinema
+// zoom-in and scroll-velocity band. Everything is decorative: content and
+// controls work without it, and reduced motion switches all of it off.
+(() => {
+  if (typeof document === 'undefined' || !window.matchMedia) return;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const fine = window.matchMedia('(hover: hover) and (pointer: fine)');
+  const root = document.documentElement;
+  if (!window.requestAnimationFrame || typeof root?.classList?.add !== 'function' || typeof document.createElement !== 'function') return;
+  const clamp = (n, a = 0, b = 1) => Math.min(b, Math.max(a, n));
+  root.classList.add('fx-ready');
+
+  // Embers rising from the hero: the one signature effect.
+  const hero = document.querySelector('.hero-home');
+  if (hero && document.createElement('canvas').getContext) {
+    const canvas = document.createElement('canvas');
+    canvas.className = 'ember-field'; canvas.setAttribute('aria-hidden', 'true');
+    hero.insertBefore(canvas, hero.firstChild);
+    const ctx = canvas.getContext('2d');
+    let w = 0, h = 0, dpr = 1, visible = true, running = false, last = 0;
+    let mx = -9999, my = -9999;
+    const embers = [];
+    const count = () => Math.round(clamp(w / 18, 26, 90));
+    function spawn(e, initial) {
+      // Most embers rise around the extinguisher, a few drift over the copy.
+      const nearArt = Math.random() < (w < 680 ? .5 : .72);
+      e.x = nearArt ? w * (w < 680 ? .5 : .74) + (Math.random() - .5) * w * (w < 680 ? .9 : .42) : Math.random() * w;
+      e.y = initial ? Math.random() * h : h + 10 + Math.random() * 40;
+      e.r = .8 + Math.random() * Math.random() * 2.8;
+      e.vy = 14 + Math.random() * 34 + e.r * 6;
+      e.sway = 6 + Math.random() * 22; e.freq = .4 + Math.random() * 1.2; e.phase = Math.random() * 6.28;
+      e.life = 0; e.max = 4 + Math.random() * 7; e.hue = 8 + Math.random() * 26;
+      e.dx = 0;
+      return e;
+    }
+    function size() {
+      const rect = hero.getBoundingClientRect();
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+      w = rect.width; h = rect.height;
+      canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      while (embers.length < count()) embers.push(spawn({}, true));
+      embers.length = count();
+    }
+    function frame(t) {
+      if (!running) return;
+      const dt = Math.min(.05, (t - (last || t)) / 1000); last = t;
+      ctx.clearRect(0, 0, w, h);
+      ctx.globalCompositeOperation = 'lighter';
+      for (const e of embers) {
+        e.life += dt;
+        if (e.life > e.max || e.y < -20) spawn(e, false);
+        const k = e.life / e.max;
+        const fade = Math.min(1, e.life * 1.6) * (1 - k) * (1 - k);
+        // Cursor pushes embers aside like a draft of air.
+        const ddx = e.x - mx, ddy = e.y - my, dist2 = ddx * ddx + ddy * ddy;
+        if (dist2 < 22500) { const f = (1 - Math.sqrt(dist2) / 150) * 120; e.dx += (ddx > 0 ? 1 : -1) * f * dt; }
+        e.dx *= .96;
+        e.y -= e.vy * dt;
+        const x = e.x + Math.sin(e.life * e.freq + e.phase) * e.sway;
+        e.x += e.dx * dt * 6;
+        const flicker = .75 + Math.sin(t / 90 + e.phase * 10) * .25;
+        const a = fade * flicker;
+        if (a <= .01) continue;
+        const g = ctx.createRadialGradient(x, e.y, 0, x, e.y, e.r * 7);
+        g.addColorStop(0, `hsla(${e.hue},100%,62%,${a * .7})`);
+        g.addColorStop(1, `hsla(${e.hue},100%,50%,0)`);
+        ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, e.y, e.r * 7, 0, 6.283); ctx.fill();
+        ctx.fillStyle = `hsla(${e.hue + 18},100%,${78 + (1 - k) * 12}%,${a})`;
+        ctx.beginPath(); ctx.arc(x, e.y, e.r, 0, 6.283); ctx.fill();
+      }
+      requestAnimationFrame(frame);
+    }
+    function update() {
+      const should = visible && !document.hidden && !reduced.matches && !document.body.classList.contains('decorations-paused');
+      if (should && !running) { running = true; last = 0; requestAnimationFrame(frame); }
+      if (!should) { running = false; ctx.clearRect(0, 0, w, h); }
+      canvas.classList.toggle('is-on', should);
+    }
+    size();
+    new IntersectionObserver(([en]) => { visible = en.isIntersecting; update(); }).observe(hero);
+    window.addEventListener('resize', () => { size(); }, { passive: true });
+    document.addEventListener('visibilitychange', update);
+    reduced.addEventListener('change', update);
+    new MutationObserver(update).observe(document.body, { attributes: true, attributeFilter: ['class'] });
+    hero.addEventListener('pointermove', ev => { const r = hero.getBoundingClientRect(); mx = ev.clientX - r.left; my = ev.clientY - r.top; }, { passive: true });
+    hero.addEventListener('pointerleave', () => { mx = my = -9999; });
+    update();
+  }
+
+  // Rolling labels on navigation links and buttons (fine pointers only).
+  if (fine.matches) {
+    document.querySelectorAll('.nav-links a, header .button, .hero-copy .button, .quiet-link').forEach(link => {
+      const node = [...link.childNodes].find(n => n.nodeType === 3 && n.textContent.trim());
+      if (!node) return;
+      const text = node.textContent.trim();
+      const roll = document.createElement('span'), inner = document.createElement('span');
+      roll.className = 'roll'; roll.dataset.t = text; inner.textContent = text; roll.appendChild(inner);
+      node.replaceWith(roll, document.createTextNode(node.textContent.endsWith(' ') ? ' ' : ''));
+    });
+  }
+
+  // Magnetic pull on primary buttons.
+  const magnets = [...document.querySelectorAll('.button, .band-toggle, .scene-arrows button, .footer-return > span')];
+  magnets.forEach(el => {
+    el.classList.add('magnet');
+    el.addEventListener('pointermove', ev => {
+      if (reduced.matches || !fine.matches) return;
+      const r = el.getBoundingClientRect();
+      const x = (ev.clientX - r.left) / r.width - .5, y = (ev.clientY - r.top) / r.height - .5;
+      el.style.setProperty('--mx', (x * 14).toFixed(2) + 'px');
+      el.style.setProperty('--my', (y * 10).toFixed(2) + 'px');
+    });
+    el.addEventListener('pointerleave', () => { el.style.setProperty('--mx', '0px'); el.style.setProperty('--my', '0px'); });
+  });
+
+  // Scroll-linked: cinema zoom-in and the band reacting to scroll speed.
+  const cinema = document.querySelector('.cinema-section');
+  const cinemaBox = document.querySelector('.cinema-container');
+  const track = document.querySelector('.activity-track');
+  let lastY = window.scrollY, speed = 0, ticking = false;
+  function tick() {
+    ticking = false;
+    const y = window.scrollY, motion = !reduced.matches;
+    if (cinema && cinemaBox) {
+      const r = cinema.getBoundingClientRect();
+      const p = motion ? clamp((window.innerHeight - r.top) / (window.innerHeight * .95)) : 1;
+      const e = 1 - Math.pow(1 - p, 3);
+      cinemaBox.style.setProperty('--cine-scale', (.82 + e * .18).toFixed(4));
+      cinemaBox.style.setProperty('--cine-y', ((1 - e) * 60).toFixed(2) + 'px');
+    }
+    if (track && motion) {
+      speed += (Math.abs(y - lastY) - speed) * .2;
+      const anim = track.getAnimations?.()[0];
+      if (anim) anim.playbackRate = 1 + Math.min(speed, 120) / 12;
+      if (speed > .3) schedule();
+    }
+    lastY = y;
+  }
+  function schedule() { if (!ticking) { ticking = true; requestAnimationFrame(tick); } }
+  window.addEventListener('scroll', schedule, { passive: true });
+  window.addEventListener('resize', schedule, { passive: true });
+  schedule();
 })();
