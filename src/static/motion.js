@@ -557,7 +557,6 @@
     update();
   }
   embers(document.querySelector('.hero-home'), { density: 18, focus: true });
-  embers(document.querySelector('.service-directory'), { density: 46, focus: false });
 
   // Buttons: a hot glow is lit where the pointer enters and follows it.
   document.querySelectorAll('.button').forEach(el => {
@@ -613,18 +612,48 @@
   window.addEventListener('resize', schedule, { passive: true });
   schedule();
 
-  // Service photo halo shifts with the row being read.
-  const win = document.querySelector('.service-window');
-  const folds = [...document.querySelectorAll('.service-fold')];
-  if (win && folds.length && typeof MutationObserver === 'function') {
-    let last = -1;
-    new MutationObserver(() => {
-      const i = folds.findIndex(f => f.classList.contains('is-reading'));
-      if (i === last || i < 0) return; last = i;
-      win.style.setProperty('--halo-y', ((i / (folds.length - 1) - .5) * 80).toFixed(1) + 'px');
-      win.style.setProperty('--halo-s', '1.12');
-      setTimeout(() => win.style.setProperty('--halo-s', '1'), 420);
-    }).observe(folds[0].parentNode, { subtree: true, attributes: true, attributeFilter: ['class'] });
+  // Service sheets: the next sheet pushes the previous one back (scale + dim);
+  // a sheet arriving opens its photo and slides the photo inside its title.
+  const sheets = [...document.querySelectorAll('.svc-card')];
+  if (sheets.length) {
+    const inners = sheets.map(c => c.querySelector('.svc-inner'));
+    const photos = sheets.map(c => c.querySelector('.svc-photo'));
+    const imgs = sheets.map(c => c.querySelector('.svc-photo img'));
+    const titles = sheets.map(c => c.querySelector('.svc-title'));
+    let queued = false;
+    const stacked = () => window.matchMedia('(min-width: 900px) and (min-height: 600px)').matches;
+    function paint() {
+      queued = false;
+      const vh = window.innerHeight, motion = !reduced.matches, stack = stacked();
+      sheets.forEach((card, i) => {
+        const r = card.getBoundingClientRect();
+        const stick = parseFloat(getComputedStyle(card).top) || 0;
+        // arrival 0 → 1 while the sheet travels up the screen
+        const arrive = motion ? clamp(1 - (r.top - (stack ? stick : vh * .15)) / (vh * .85)) : 1;
+        const e = 1 - Math.pow(1 - arrive, 3);
+        photos[i].style.setProperty('--clip', ((1 - e) * 9).toFixed(2) + '%');
+        imgs[i].style.setProperty('--zoom', (1.2 - e * .16).toFixed(4));
+        imgs[i].style.setProperty('--shift', ((1 - e) * 40).toFixed(1) + 'px');
+        titles[i].style.setProperty('--title-y', (30 + e * 40).toFixed(1) + '%');
+        titles[i].style.setProperty('--title-x', (60 - e * 20).toFixed(1) + '%');
+        // depth: how far the following sheet (or the film) has covered this one
+        let depth = 0;
+        if (stack && motion) {
+          const next = sheets[i + 1] || null;
+          if (next) {
+            const nr = next.getBoundingClientRect(), nstick = parseFloat(getComputedStyle(next).top) || 0;
+            depth = clamp(1 - (nr.top - nstick) / (r.height || vh));
+          }
+        }
+        inners[i].style.transform = depth ? `scale(${(1 - depth * .06).toFixed(4)}) translateY(${(-depth * 10).toFixed(1)}px)` : '';
+        inners[i].style.setProperty('--dim', (depth * .2).toFixed(3));
+      });
+    }
+    const ask = () => { if (!queued) { queued = true; requestAnimationFrame(paint); } };
+    window.addEventListener('scroll', ask, { passive: true });
+    window.addEventListener('resize', ask, { passive: true });
+    reduced.addEventListener('change', ask);
+    ask();
   }
 
   // The film scene is a magnet: once part of it is on screen and scrolling
