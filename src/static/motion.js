@@ -743,6 +743,66 @@
     window.addEventListener('scroll', show, { passive: true }); show();
   }
 
+  // Easter egg: a small firefighter lives on the film frame. He peeks out from
+  // behind it, climbs onto the top edge, and puts out flames that flare up there.
+  const cineBox = document.querySelector('.cinema-container');
+  if (cinema && cineBox && !reduced.matches && typeof Promise === 'function' && document.getElementById('ff-template')) {
+    const stage = document.createElement('div');
+    stage.className = 'ff-stage'; stage.setAttribute('aria-hidden', 'true');
+    const tpl = document.getElementById('ff-template');
+    if (tpl?.content) stage.appendChild(tpl.content.cloneNode(true));
+    cineBox.insertBefore(stage, cineBox.firstChild);
+    const ff = stage.querySelector('.ff'), face = stage.querySelector('.ff-face'), flame = stage.querySelector('.ff-flame');
+    let visible = false, x = 0, dir = -1, alive = true;
+    new IntersectionObserver(([en]) => { visible = en.isIntersecting && en.intersectionRatio > .4; }, { threshold: [0, .4, .7] }).observe(cinema);
+    const paused = () => !visible || document.hidden || reduced.matches || cinema.classList.contains('cinema-paused') || document.body.classList.contains('decorations-paused');
+    const sleep = ms => new Promise(res => { let left = ms, last = performance.now(); (function t(now) { if (!paused()) left -= now - last; last = now; left > 0 ? requestAnimationFrame(t) : res(); })(last); });
+    const W = () => stage.clientWidth, size = () => ff.offsetHeight || 48;
+    const place = () => { ff.style.transform = `translateX(${x.toFixed(1)}px)`; face.style.transform = `scaleX(${dir})`; };
+    function walkTo(tx, speed = 1) {
+      return new Promise(res => {
+        dir = tx > x ? 1 : -1; place(); ff.classList.add('walking');
+        let last = performance.now();
+        (function step(now) {
+          const dt = Math.min(.05, (now - last) / 1000); last = now;
+          if (!paused()) { const v = size() * 1.6 * speed * dt; x = Math.abs(tx - x) <= v ? tx : x + dir * v; place(); }
+          if (x === tx) { ff.classList.remove('walking'); res(); } else requestAnimationFrame(step);
+        })(last);
+      });
+    }
+    async function lookAround() { for (let i = 0; i < 2; i++) { dir = -dir; place(); await sleep(450 + Math.random() * 400); } }
+    ff.addEventListener('click', () => { ff.classList.remove('hop'); void ff.offsetWidth; ff.classList.add('hop'); });
+    async function life() {
+      while (!visible) await sleep(300);
+      await sleep(1400);
+      x = W() * .78; dir = -1; place();
+      stage.classList.add('is-peeking');            // head appears above the edge
+      await sleep(1100); await lookAround();
+      stage.classList.add('is-up');                 // hop onto the frame
+      await sleep(700);
+      let round = 0;
+      while (alive) {
+        await sleep(round++ ? 3500 + Math.random() * 3500 : 1200);
+        if (round > 1 && Math.random() < .5) { await walkTo(clamp(W() * (.12 + Math.random() * .76), 0, W() - size()), .6); await sleep(900); await lookAround(); }
+        // a flame flares up somewhere along the edge, away from him
+        const w = W(), s = size();
+        let fx = x < w / 2 ? w * (.6 + Math.random() * .3) : w * (.08 + Math.random() * .3);
+        flame.style.left = fx.toFixed(1) + 'px'; flame.className = 'ff-flame is-burning';
+        await sleep(600);
+        dir = fx > x ? 1 : -1; place(); ff.classList.add('alert'); await sleep(750); ff.classList.remove('alert');
+        await walkTo(fx > x ? fx - s * 1.55 : fx + s * .85, 1.7);
+        dir = fx > x ? 1 : -1; place();
+        ff.classList.add('spraying'); await sleep(900);
+        flame.classList.add('is-out'); await sleep(900);
+        ff.classList.remove('spraying'); await sleep(500);
+        flame.className = 'ff-flame';
+        ff.classList.remove('hop'); void ff.offsetWidth; ff.classList.add('hop');
+      }
+    }
+    life();
+    reduced.addEventListener('change', () => { if (reduced.matches) { alive = false; stage.remove(); } });
+  }
+
   // The film scene is a magnet: once part of it is on screen and scrolling
   // pauses, the page glides so the film fills the screen. A new gesture
   // always cancels the glide immediately.
