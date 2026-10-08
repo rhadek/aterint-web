@@ -97,7 +97,7 @@
     for (const child of [...node.childNodes]) {
       if (child.nodeType === 3 && child.textContent.trim()) {
         const fragment = document.createDocumentFragment();
-        for (const part of child.textContent.split(/(\s+)/)) {
+        for (const part of child.textContent.split(/([ \t\n\r]+)/)) {
           if (!part.trim()) { fragment.appendChild(document.createTextNode(part)); continue; }
           const mask = document.createElement('span'), word = document.createElement('span');
           mask.className = 'text-mask'; word.className = 'text-word'; word.textContent = part;
@@ -1148,4 +1148,14 @@
   grid('.tag-months', months.map((m, i) => [String(i + 1), m, i]), v => { month = v; });
   grid('.tag-years', [cy - 3, cy - 2, cy - 1, cy].map(y => [String(y).slice(2), String(y), y]), v => { year = v; });
   card.hidden = false;
+})();
+
+// Service checklist: rows settle in and each item gets its tick, like a signed inspection record.
+(() => {
+  if (typeof document === 'undefined' || !document.querySelectorAll || typeof IntersectionObserver !== 'function') return;
+  const lists = document.querySelectorAll('[data-checklist]');
+  if (!lists.length || typeof lists[0].querySelectorAll !== 'function') return;
+  lists.forEach(l => l.querySelectorAll('li').forEach((li, i) => li.style.setProperty('--i', i)));
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }), { threshold: .15 });
+  lists.forEach(l => io.observe(l));
 })();
