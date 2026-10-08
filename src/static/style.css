@@ -630,3 +630,7 @@ html.film-snap{scroll-snap-type:y proximity;scroll-padding-top:0}
  .fx-chapters .svc-item .svc-items li:before{transform:none}
  .svc-band-media:after{display:none}
 }
+/* v17 – while the wheel is being smoothed, CSS snapping stays out of the way */
+.fx-wheeling{scroll-behavior:auto!important}
+.fx-nosnap{scroll-snap-type:none!important}
+.fx-gliding{scroll-behavior:auto!important}

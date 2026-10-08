@@ -314,6 +314,7 @@
   }
   function settleGuide() {
     if (!horizontal || reduced.matches || document.hidden || guideTouch || touchScrolling || guideSnapTarget !== null) return;
+    if (document.documentElement.classList?.contains?.('fx-wheeling')) { queueGuideSnap(); return; }
     const y = window.scrollY;
     // No wheel/touch interception and no snapping outside these four chapters.
     if (y < guideTop || y > guideTop + guideDistance) { guideGestureStart = null; return; }
@@ -686,6 +687,49 @@
     if (!motionOn()) document.querySelectorAll('.svc-band,.svc-item').forEach(el => el.classList.add('is-lit', 'is-in'));
   }
 
+  // Smooth wheel: mouse-wheel steps become one continuous, eased movement.
+  // Only plain vertical wheel scrolling of the page is smoothed; zoom, horizontal
+  // gestures, touch, keyboard and inner scroll areas stay native.
+  if (fine.matches && typeof window.scrollTo === 'function') {
+    let target = window.scrollY, current = window.scrollY, raf = 0, setY = -1, snapBack;
+    const maxY = () => document.documentElement.scrollHeight - window.innerHeight;
+    function innerScrollable(el, dy) {
+      for (; el && el !== document.body && el !== root; el = el.parentElement) {
+        const st = getComputedStyle(el);
+        if (/(auto|scroll)/.test(st.overflowY) && el.scrollHeight > el.clientHeight + 1) {
+          if (dy > 0 ? el.scrollTop + el.clientHeight < el.scrollHeight - 1 : el.scrollTop > 0) return true;
+        }
+      }
+      return false;
+    }
+    let lastT = 0;
+    function loop(t) {
+      const dt = lastT ? Math.min(.05, (t - lastT) / 1000) : 1 / 60; lastT = t;
+      current += (target - current) * (1 - Math.pow(1 - .14, dt * 60));
+      if (Math.abs(target - current) < 1) current = target;
+      setY = Math.round(current);
+      window.scrollTo({ top: current, behavior: 'instant' });
+      if (current !== target) raf = requestAnimationFrame(loop);
+      else { raf = 0; lastT = 0; root.classList.remove('fx-wheeling'); clearTimeout(snapBack); snapBack = setTimeout(() => root.classList.remove('fx-nosnap'), 900); window.dispatchEvent(new Event('fx-wheel-end')); }
+    }
+    window.addEventListener('wheel', ev => {
+      if (reduced.matches || ev.ctrlKey || ev.defaultPrevented || Math.abs(ev.deltaX) > Math.abs(ev.deltaY)) return;
+      if (innerScrollable(ev.target, ev.deltaY)) return;
+      ev.preventDefault();
+      if (!raf) { target = current = window.scrollY; }
+      const unit = ev.deltaMode === 1 ? 40 : ev.deltaMode === 2 ? window.innerHeight : 1;
+      target = clamp(target + ev.deltaY * unit, 0, maxY());
+      root.classList.add('fx-wheeling', 'fx-nosnap'); clearTimeout(snapBack);
+      if (!raf) raf = requestAnimationFrame(loop);
+    }, { passive: false });
+    // Anything else that scrolls the page (keys, links, glides) takes over cleanly.
+    window.addEventListener('scroll', () => {
+      if (raf && Math.abs(window.scrollY - setY) > 3) { cancelAnimationFrame(raf); raf = 0; root.classList.remove('fx-wheeling'); }
+    }, { passive: true });
+    window.addEventListener('keydown', () => { if (raf) { cancelAnimationFrame(raf); raf = 0; root.classList.remove('fx-wheeling'); } });
+    window.addEventListener('fx-wheel-end', () => window.dispatchEvent(new Event('scroll')));
+  }
+
   // The film scene is a magnet: once part of it is on screen and scrolling
   // pauses, the page glides so the film fills the screen. A new gesture
   // always cancels the glide immediately.
@@ -708,12 +752,12 @@
       glide = requestAnimationFrame(step);
     }
     function settle() {
-      if (glide || gesture || reduced.matches || document.hidden || performance.now() < quietUntil) return;
+      if (glide || gesture || reduced.matches || document.hidden || performance.now() < quietUntil || root.classList.contains('fx-wheeling')) return;
       const r = cinema.getBoundingClientRect(), vh = window.innerHeight;
       if (r.height < vh * .8) return;
       const top = window.scrollY + r.top;
       const entering = dir >= 0 ? (r.top > 0 && r.top < vh * .8) : (r.top < 0 && r.top > -vh * .8);
-      const overshoot = Math.abs(r.top) < vh * .22;
+      const overshoot = Math.abs(r.top) < vh * .12;
       if (entering || overshoot) glideTo(top);
     }
     window.addEventListener('scroll', () => {
