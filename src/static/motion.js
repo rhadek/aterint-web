@@ -639,8 +639,9 @@
           else band.classList.add('is-open');
         }
         const img = band.querySelector('img'), title = band.querySelector('.svc-band-title');
-        img?.style.setProperty('--band-shift', motion ? ((through - .5) * -14).toFixed(2) + '%' : '0px');
-        img?.style.setProperty('--band-zoom', motion ? (1.12 - e * .1).toFixed(4) : '1');
+        // set on the band so the photo and its blurred backdrop share the exact same drift and zoom
+        band.style.setProperty('--band-shift', motion ? ((through - .5) * -.14 * (img ? img.offsetHeight : r.height)).toFixed(1) + 'px' : '0px');
+        band.style.setProperty('--band-zoom', motion ? (1.12 - e * .1).toFixed(4) : '1');
       });
     }
     const ask = () => { if (!queued) { queued = true; requestAnimationFrame(paint); } };

@@ -746,3 +746,7 @@ body{background:var(--paper)}
 .signature-fill:before{content:'ATERINT'}
 body .eyebrow{color:#b3261e}
 .detail-hero .eyebrow{color:#ffab98}
+
+/* v36: rozmazané pozadí za fotkou se posouvá i zvětšuje synchronně s fotkou */
+@media(min-width:1180px){.svc-band:before{transform:translateY(var(--band-shift,0px)) scale(calc(var(--band-zoom,1) * 1.06));will-change:transform}}
+@media(min-width:1180px) and (prefers-reduced-motion:reduce){.svc-band:before{transform:scale(1.08)}}
