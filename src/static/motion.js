@@ -915,15 +915,15 @@
   if (hello && !reduced.matches) {
     const pause = ms => new Promise(r => setTimeout(r, ms));
     let gone = false;
-    const leave = () => { if (gone) return; gone = true; hello.classList.remove('is-waving', 'is-in'); setTimeout(() => { hello.hidden = true; }, 700); };
+    const leave = () => { if (gone) return; gone = true; hello.classList.remove('is-waving', 'is-in'); setTimeout(() => { hello.hidden = true; }, 400); };
     hello.addEventListener('click', leave);
     window.addEventListener('scroll', () => { if (window.scrollY > window.innerHeight * .4) leave(); }, { passive: true });
     (async () => {
       await pause(document.querySelector('.intro-screen') ? 1700 : 500);
       if (gone) return;
       hello.hidden = false; void hello.offsetWidth;
-      hello.classList.add('is-in'); await pause(520);
-      hello.classList.add('is-waving'); await pause(1500);
+      hello.classList.add('is-in'); await pause(280);
+      hello.classList.add('is-waving'); await pause(720);
       leave();
     })();
   }

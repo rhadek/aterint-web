@@ -801,13 +801,13 @@ header .nav{position:relative}
 @keyframes ff-wave-side{from{transform:rotate(-22deg)}to{transform:rotate(26deg)}}
 .ff-spot-lean .ff-lift{rotate:8deg}
 /* v26 – welcome: half a firefighter leans in from the bottom-right corner and waves */
-.ff-hello{position:fixed;right:0;bottom:0;z-index:60;width:clamp(150px,15vw,250px);pointer-events:none;transform:translate(75%,45%) rotate(-4deg);transform-origin:100% 100%;transition:transform .5s cubic-bezier(.3,1.35,.5,1)}
+.ff-hello{position:fixed;right:0;bottom:0;z-index:60;width:clamp(150px,15vw,250px);pointer-events:none;transform:translate(75%,45%) rotate(-4deg);transform-origin:100% 100%;transition:transform .28s cubic-bezier(.3,1.35,.5,1)}
 .ff-hello.is-in{transform:translate(14%,4%) rotate(-14deg);pointer-events:auto;cursor:pointer}
-.ff-hello:not(.is-in){transition:transform .45s cubic-bezier(.5,0,.75,0)}
+.ff-hello:not(.is-in){transition:transform .26s cubic-bezier(.5,0,.75,0)}
 .ff-hello-body{transform:scaleX(-1);filter:drop-shadow(-10px 14px 22px #0005)}
 .ff-hello-body svg{display:block;width:100%;height:auto;overflow:hidden}
 .ff-hello-forearm{transform-box:view-box;transform-origin:99px 76px}
-.ff-hello.is-waving .ff-hello-forearm{animation:ff-hello-wave .26s ease-in-out infinite alternate}
+.ff-hello.is-waving .ff-hello-forearm{animation:ff-hello-wave .18s ease-in-out infinite alternate}
 @keyframes ff-hello-wave{from{transform:rotate(-18deg)}to{transform:rotate(24deg)}}
 .ff-hello-eyes{transform-box:fill-box;transform-origin:center;animation:ff-blink 3.8s infinite}
 @media(prefers-reduced-motion:reduce){.ff-hello{display:none}}
